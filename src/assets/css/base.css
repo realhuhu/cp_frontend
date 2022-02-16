@@ -1,0 +1,57 @@
+@import "./normalize.css";
+
+:root {
+    --mask: rgba(200, 200, 200, 0.5);
+    --font-size: 14px;
+    --line-height: 1.5;
+}
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragion Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    overflow: hidden;
+}
+
+a {
+    text-decoration: none;
+}
+
+.clear-fix::after {
+    clear: both;
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    visibility: hidden;
+}
+
+.clear-fix {
+    zoom: 1;
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+.card {
+    --card-footer-margin: 0;
+    --card-padding: 10px;
+    --card-footer-padding: 0
+}
+.dark-bold{
+    color: #333;
+    font-weight: bold;
+}

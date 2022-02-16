@@ -1,30 +1,62 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+  <pc-nav-bar :active="active"/>
+  <pe-tab-bar :active="active"/>
+
+  <div id="content">
+    <router-view></router-view>
   </div>
-  <router-view/>
+
+  <var-back-top style="right: 15%;" :duration="300"/>
 </template>
 
+<script>
+  import PcNavBar from "components/bar/PcNavBar";
+  import PeTabBar from "components/bar/PeTabBar";
+
+  export default {
+    name: "app",
+    components: {
+      PcNavBar,
+      PeTabBar,
+    },
+    data() {
+      return {
+        active: 0,
+        night: false,
+      }
+    },
+    beforeCreate() {
+      let token = this.$cookies.get("token")
+      if (!token) {
+        this.$store.commit("initialize")
+      } else {
+        this.$ajax.api.get(
+          "user/user_info/",
+        ).then(res => {
+          if (res.data.code === 107) {
+            this.$store.commit("login", res.data.result.user)
+          }
+          this.$store.commit("initialize")
+        }).catch(err => {
+          this.$store.commit("initialize")
+          console.log(err)
+        })
+      }
+    },
+  }
+</script>
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+  @import "assets/css/normalize.css";
 
-#nav {
-  padding: 30px;
-}
+  @media screen and (min-width: 840px) {
+    #content {
+      margin: 64px 0 0;
+      min-height: calc(70vh - 50px);
+    }
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
 
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
+  }
+
+  @media screen and (max-width: 840px) {
+  }
 </style>
