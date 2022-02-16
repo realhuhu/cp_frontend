@@ -17,9 +17,6 @@
       width: 100%;
       height: 100%;
       background-image: url(https://cp-1304907527.cos.ap-nanjing.myqcloud.com/static/background.jpg);
-      -webkit-background-size: cover;
-      -moz-background-size: cover;
-      -o-background-size: cover;
       background-size: cover;
       opacity: 0.4;
       z-index: -1;

@@ -51,7 +51,10 @@ a {
     --card-padding: 10px;
     --card-footer-padding: 0
 }
-.dark-bold{
+
+.dark-bold {
     color: #333;
     font-weight: bold;
 }
+
+
