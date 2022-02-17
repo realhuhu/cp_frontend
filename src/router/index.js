@@ -12,41 +12,46 @@ const routes = [
   {
     path: "/home",
     component: Home,
-    meta: {}
+    meta: {title : '校史知识竞赛'}
   },
   {
     path: "/login",
     component: () => import("views/Login"),
     meta: {
-      auth: false
+      auth: false,
+      title : '登录'
     }
   },
   {
     path: "/reset-password",
     component: () => import("views/ResetPassword"),
     meta: {
-      auth: false
+      auth: false,
+      title: '重置密码'
     }
   },
   {
     path: "/change-password",
     component: () => import("views/ChangePassword"),
     meta: {
-      auth: true
+      auth: true,
+      title: '修改密码'
     }
   },
   {
     path: "/user-info",
     component: () => import("views/UserInfo"),
     meta: {
-      auth: true
+      auth: true,
+      title: '用户信息'
     }
   },
   {
     path: "/change-icon",
     component: () => import("views/ChangeIcon"),
     meta: {
-      auth: true
+      auth: true,
+      title: '修改头像'
     }
   },
   {

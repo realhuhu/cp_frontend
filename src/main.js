@@ -21,3 +21,11 @@ app.config.globalProperties.$dialog = Dialog
 app.use(store)
 app.use(router)
 app.mount('#app')
+
+
+router.beforeEach((to,from,next) => {
+    if(to.meta.title){
+        document.title = to.meta.title
+    }
+    next();
+})
