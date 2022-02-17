@@ -28,6 +28,13 @@ const routes = [
       auth: false
     }
   },
+  {
+    path: "/change-password",
+    component: () => import("views/ChangePassword"),
+    meta: {
+      auth: true
+    }
+  },
 ]
 
 const router = createRouter({

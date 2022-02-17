@@ -12,7 +12,7 @@
     </template>
   </var-app-bar>
 
-  <div id="banner"></div>
+  <div id="banner"/>
 
   <div id="wrap">
     <span id="to-login" @click="this.$router.push({path: '/login', query: {next: this.$route.query.next}})">登陆</span>
@@ -162,10 +162,11 @@
     }
 
     #banner {
-      margin-top: 64px;
       width: 100vw;
-      height: 5vw;
-      background-color: #f6f6f6;
+      height: 8vw;
+      background-image:linear-gradient(to top, rgba(255, 255, 255, .8), rgba(255, 255, 255, 0)), url(https://cp-1304907527.cos.ap-nanjing.myqcloud.com/static/banner.jpg);
+      background-size: cover;
+      z-index: -1;
     }
 
     #wrap {
@@ -191,14 +192,15 @@
     #success {
       margin: 30px 150px;
     }
+
   }
 
   @media screen and (max-width: 840px) {
-    #banner,#wrap{
+    #banner, #wrap {
       display: none;
     }
 
-    #step-wrap{
+    #step-wrap {
       margin: 20px 5vw;
     }
 

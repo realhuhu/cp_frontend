@@ -1,5 +1,7 @@
 let cos_url = "https://cp-1304907527.cos.ap-nanjing.myqcloud.com/"
 let api_url = "https://api.seutools.com/"
+// let api_url = "http://127.0.0.1:8000/"
+
 
 let re_pattens = {
   username: /^[a-zA-Z0-9\u4e00-\u9fa5]{1,16}$/,

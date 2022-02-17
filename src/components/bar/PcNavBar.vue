@@ -42,15 +42,48 @@
         height="48px"
         fit="cover"
         radius="50%"
-        style="border: 2px solid gray"
+        style="border: 2px solid rgba(200,200,200,0.9)"
         :src="icon"
         @click.stop="avatar_click"
       />
       <div class="var-elevation--1" id="popup" v-if="show_user_info" @click="show_user_info=false">
         <div id="options-wrap">
-          <var-button style="width: 100%" type="danger" @click="logout">
+          <var-image
+            width="70px"
+            height="70px"
+            fit="cover"
+            radius="50%"
+            style="margin: 20px 70px 10px;border: 1px solid rgba(200,200,200,0.9)"
+            :src="icon"
+            @click.stop="avatar_click"
+          />
+          <div id="username">
+            {{user.username}}
+          </div>
+
+          <var-divider margin="0"/>
+
+          <div class="btn">
+            <var-icon class="btn-icon-left" size="20" name="account-circle-outline"/>
+            个人信息
+            <var-icon class="btn-icon-right" size="20" name="chevron-right"/>
+          </div>
+          <div class="btn">
+            <var-icon class="btn-icon-left" size="20" name="format-list-checkbox"/>
+            参赛记录
+            <var-icon class="btn-icon-right" size="20" name="chevron-right"/>
+          </div>
+          <div class="btn" @click="this.$router.replace('change-password')">
+            <var-icon class="btn-icon-left" size="20" name="cog-outline"/>
+            修改密码
+            <var-icon class="btn-icon-right" size="20" name="chevron-right"/>
+          </div>
+
+          <var-divider margin="0"/>
+          <div class="btn" @click="logout">
+            <var-icon class="btn-icon-left" size="20" name="information-outline"/>
             注销
-          </var-button>
+          </div>
         </div>
       </div>
     </div>
@@ -68,10 +101,13 @@
       return {
         value: null,
         show_user_info: false,
-        show_login_popup: false
+        show_login_popup: false,
       }
     },
     computed: {
+      user() {
+        return this.$store.state.user
+      },
       icon() {
         return this.$settings.cos_url + (this.$store.state.user.icon || "icon/login.jpg")
       },
@@ -144,7 +180,7 @@
       float: left;
       margin: 0 5% 0 1%;
       font-weight: bold;
-      width: 15%;
+      width: 40%;
     }
 
 
@@ -180,24 +216,46 @@
       position: fixed;
       top: 64px;
       right: calc(20% - 60px);
-      width: 20%;
-      height: 40vh;
+      width: 250px;
       background-color: white;
       border-radius: 0 0 20px 20px;
       z-index: 1000;
     }
 
-    #message:hover, #search:hover {
-      background-color: #f6f6f6;
-    }
-
-    #avatar, #message, #search-btn, #name, #logo {
-      cursor: pointer;
-    }
-
     #options-wrap {
       margin: 20px;
     }
+
+    #username {
+      font-weight: bolder;
+      line-height: 24px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .btn {
+      line-height: 40px;
+      border-radius: 5px;
+    }
+
+    .btn-icon-left {
+      margin: 10px;
+    }
+
+    .btn-icon-right {
+      margin: 10px;
+      float: right;
+    }
+
+    #message:hover, #search:hover, .btn:hover {
+      background-color: #f6f6f6;
+    }
+
+    #avatar, #message, #search-btn, #name, #logo, .btn {
+      cursor: pointer;
+    }
+
+
   }
 
 

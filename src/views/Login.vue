@@ -1,4 +1,6 @@
 <template>
+  <div id="background"></div>
+
   <var-app-bar
     id="app-bar"
     class="var-elevation--1"
@@ -12,7 +14,6 @@
     </template>
   </var-app-bar>
 
-  <div id="banner"></div>
 
   <div id="wrap">
     <var-divider>
@@ -50,7 +51,7 @@
     </var-card>
 
     <div id="register">
-      <var-chip block plain color="#999" text-color="#5a7ab7" @click="login_toggle">
+      <var-chip block plain color="#333" text-color="#254b8f" @click="login_toggle">
         {{is_to_login?"没有账号？注册一个！":"已有账号？快去登录！"}}
       </var-chip>
     </div>
@@ -173,20 +174,29 @@
 
 <style scoped>
   @media screen and (min-width: 840px) {
+    #background {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url(https://newids.seu.edu.cn/authserver/custom/images/bg5.jpg);
+      background-size: cover;
+      opacity: 0.95;
+      z-index: -1;
+    }
+
     #app-bar {
       display: none;
     }
 
-    #banner {
-      margin-top: 64px;
-      width: 100vw;
-      height: 5vw;
-      background-color: #f6f6f6;
-    }
 
     #wrap {
-      width: 50vw;
-      margin: 20px 25vw 0;
+      width: 500px;
+      margin: 20vh 10vw 0 calc(90vw - 500px);
+      padding: 30px;
+      border-radius: 30px;
+      background-color: rgba(255, 255, 255, .95);
     }
 
     #title {
@@ -213,10 +223,6 @@
   }
 
   @media screen and (max-width: 840px) {
-    #banner {
-      display: none;
-    }
-
     #wrap {
       width: 90vw;
       margin: 20px 5vw 0;
