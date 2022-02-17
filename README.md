@@ -15,5 +15,11 @@ npm run serve
 npm run build
 ```
 
+### Deploy
+```
+cd dist
+tcb hosting deploy -r gz -e seu-170727
+```
+
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).

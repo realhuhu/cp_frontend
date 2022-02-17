@@ -35,6 +35,13 @@ const routes = [
       auth: true
     }
   },
+  {
+    path: "/user-info",
+    component: () => import("views/UserInfo"),
+    meta: {
+      auth: true
+    }
+  },
 ]
 
 const router = createRouter({

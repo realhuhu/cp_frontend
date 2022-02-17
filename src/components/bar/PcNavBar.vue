@@ -63,7 +63,7 @@
 
           <var-divider margin="0"/>
 
-          <div class="btn">
+          <div class="btn" @click="this.$router.push({path: '/user-info', query: {next: this.$route.path}})">
             <var-icon class="btn-icon-left" size="20" name="account-circle-outline"/>
             个人信息
             <var-icon class="btn-icon-right" size="20" name="chevron-right"/>
@@ -80,9 +80,10 @@
           </div>
 
           <var-divider margin="0"/>
+
           <div class="btn" @click="logout">
             <var-icon class="btn-icon-left" size="20" name="information-outline"/>
-            注销
+            退出登录
           </div>
         </div>
       </div>

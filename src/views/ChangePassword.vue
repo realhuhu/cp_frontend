@@ -1,21 +1,30 @@
 <template>
   <div id="banner"/>
 
+  <div id="tip-wrap">
+    <span id="to-login" @click="this.$router.push('/user-info')">个人信息</span>
+    <span>&nbsp;&gt;&nbsp;修改密码</span>
+  </div>
+
   <div id="wrap">
     <var-divider>
       <div id="title">修改密码</div>
     </var-divider>
 
-    <div v-if="!success" style="padding: 30px">
-      <password placeholder="旧密码" v-model:password="old_password"/>
-      <password placeholder="新密码" v-model:password="new_password"/>
-      <password placeholder="确认密码" v-model:password="confirm_password" :confirm="new_password"/>
+    <var-card v-if="!success" class="card" id="card">
+      <template #extra>
+        <div style="padding: 30px">
+          <password placeholder="旧密码" v-model:password="old_password"/>
+          <password placeholder="新密码" v-model:password="new_password"/>
+          <password placeholder="确认密码" v-model:password="confirm_password" :confirm="new_password"/>
 
-      <br>
-      <div id="login-btn">
-        <var-button block type="success" @click="change_password">确认修改</var-button>
-      </div>
-    </div>
+          <br>
+          <div id="login-btn">
+            <var-button block type="success" @click="change_password">确认修改</var-button>
+          </div>
+        </div>
+      </template>
+    </var-card>
 
     <div v-else>
       <var-icon id="success" size="100px" color="green" name="check-circle-outline"/>
@@ -98,6 +107,15 @@
       z-index: -1;
     }
 
+    #tip-wrap {
+      margin: 20px 25vw 0;
+    }
+
+    #to-login {
+      cursor: pointer;
+      color: #3a7afe;
+    }
+
     #wrap {
       width: 500px;
       margin: 20px calc(50vw - 250px);
@@ -110,6 +128,10 @@
       color: #333;
       font-size: 38px;
       padding: 0 2vw;
+    }
+
+    #card {
+      border-radius: 30px;
     }
 
     #success {
