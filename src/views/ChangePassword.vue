@@ -1,4 +1,17 @@
 <template>
+  <var-app-bar
+    id="app-bar"
+    class="var-elevation--1"
+    title-position="center"
+    color="#f6f6f6"
+    text-color="#333"
+  >
+    <template #left>
+      <var-icon name="chevron-left" :size="24" @click="this.$router.return('/home')"/>
+      <div name="chevron-left" :size="24" @click="this.$router.return('/home')">返回</div>
+    </template>
+  </var-app-bar>
+
   <div id="banner"/>
 
   <div id="tip-wrap">
@@ -7,12 +20,13 @@
   </div>
 
   <div id="wrap">
-    <var-divider>
-      <div id="title">修改密码</div>
+    <var-divider id="title">
+      <div>修改密码</div>
     </var-divider>
 
     <var-card v-if="!success" class="card" id="card">
       <template #extra>
+        <div id="pc-title">修改密码</div>
         <div style="padding: 30px">
           <password placeholder="旧密码" v-model:password="old_password"/>
           <password placeholder="新密码" v-model:password="new_password"/>
@@ -136,6 +150,28 @@
 
     #success {
       margin: 30px 200px;
+    }
+
+    #app-bar, #pc-title {
+      display: none;
+    }
+  }
+
+  @media screen and (max-width: 840px) {
+    #tip-wrap, #title {
+      display: none;
+    }
+
+    #pc-title {
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    #card {
+      width: 90vw;
+      margin: 10px 5vw;
+      border-radius: 30px;
     }
   }
 </style>

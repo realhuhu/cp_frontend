@@ -1,5 +1,6 @@
 <template>
   <var-tabs
+    v-if="show"
     id="pe-nav-bar"
     elevation
     v-model:active="active"
@@ -12,15 +13,11 @@
       <var-icon name="home-outline"/>
       <div class="text">首页</div>
     </var-tab>
-    <var-tab @click="itemClick('category')">
+    <var-tab @click="itemClick('competition')">
       <var-icon name="menu"/>
-      <div class="text">话题</div>
+      <div class="text">竞赛列表</div>
     </var-tab>
-    <var-tab @click="itemClick('community')">
-      <var-icon name="message-processing-outline"/>
-      <div>论坛</div>
-    </var-tab>
-    <var-tab @click="itemClick('profile')">
+    <var-tab @click="itemClick('user-info')">
       <var-icon name="account-circle-outline"/>
       <div>我的</div>
     </var-tab>
@@ -33,8 +30,20 @@
     props: {
       active: Number
     },
+    data() {
+      return {
+        show: true
+      }
+    },
+    watch: {
+      "$route"() {
+        let index = ["/home", "/competition", "/user-info"].indexOf(window.location.pathname)
+        this.show = index !== -1
+      }
+    },
     methods: {
       itemClick(path) {
+        this.$router.replace(path)
       }
     },
   }

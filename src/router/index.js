@@ -42,6 +42,17 @@ const routes = [
       auth: true
     }
   },
+  {
+    path: "/change-icon",
+    component: () => import("views/ChangeIcon"),
+    meta: {
+      auth: true
+    }
+  },
+  {
+    path: "/competition",
+    component: () => import("views/Competition"),
+  },
 ]
 
 const router = createRouter({
@@ -79,5 +90,8 @@ router.beforeEach((to, from, next) => {
   })
 })
 
+router.return = function (path) {
+  return (!window.history.state.back && path) ? router.replace(path) : router.back()
+}
 
 export default router

@@ -1,5 +1,5 @@
 <template>
-  <pc-nav-bar :active="active"/>
+  <pc-nav-bar/>
   <pe-tab-bar :active="active"/>
 
   <div id="content">
@@ -23,6 +23,12 @@
       return {
         active: 0,
         night: false,
+      }
+    },
+    watch: {
+      "$route"() {
+        let index = ["/home", "/competition", "/profile"].indexOf(window.location.pathname)
+        this.active = index
       }
     },
     beforeCreate() {

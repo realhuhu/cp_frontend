@@ -6,9 +6,9 @@
     color="#f6f6f6"
     text-color="#333"
   >
-    <template #left>
-      <var-icon name="chevron-left" :size="24"/>
-      <div>返回</div>
+    <template #left @click="this.$router.back()">
+      <var-icon name="chevron-left" :size="24" @click="this.$router.return('/login')"/>
+      <div @click="this.$router.return('/login')">返回</div>
     </template>
   </var-app-bar>
 
@@ -164,7 +164,7 @@
     #banner {
       width: 100vw;
       height: 8vw;
-      background-image:linear-gradient(to top, rgba(255, 255, 255, .8), rgba(255, 255, 255, 0)), url(https://cp-1304907527.cos.ap-nanjing.myqcloud.com/static/banner.jpg);
+      background-image: linear-gradient(to top, rgba(255, 255, 255, .8), rgba(255, 255, 255, 0)), url(https://cp-1304907527.cos.ap-nanjing.myqcloud.com/static/banner.jpg);
       background-size: cover;
       z-index: -1;
     }
@@ -207,6 +207,10 @@
     #input-wrap {
       width: 70vw;
       margin: 10px 15vw;
+    }
+
+    #success {
+      margin: 30px calc(35vw - 50px);
     }
   }
 </style>

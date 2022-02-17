@@ -9,8 +9,8 @@
     text-color="#333"
   >
     <template #left>
-      <var-icon name="chevron-left" :size="24"/>
-      <div>返回</div>
+      <var-icon name="chevron-left" :size="24" @click="this.$router.return('/home')"/>
+      <div :size="24" @click="this.$router.return('/home')">返回</div>
     </template>
   </var-app-bar>
 

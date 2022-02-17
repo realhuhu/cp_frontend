@@ -5,6 +5,7 @@
       :placeholder="placeholder || '11位电话号码'"
       :rules="$settings.validators.phone"
       v-model="phone"
+      :disabled="disabled"
       @change="$emit('update:phone',phone)"
     />
   </div>
@@ -15,7 +16,8 @@
     name: "Phone",
     props: {
       placeholder: null,
-      phone: {}
+      phone: {},
+      disabled:false
     },
     emits: ["update:phone"]
   }
