@@ -15,5 +15,8 @@ module.exports = {
         resolvers: [VarletUIResolver()]
       })
     ]
+  },
+  devServer: {
+    open: true
   }
 }

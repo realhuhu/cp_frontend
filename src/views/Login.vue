@@ -44,7 +44,7 @@
         <var-button style="width: 50%" text type="primary" @click="phone_toggle">
           {{is_use_phone? is_to_login?"密码登录":"用户名密码注册":is_to_login?"短信验证码登录":"手机号注册"}}
         </var-button>
-        <var-button style="width: 50%" text type="primary" @click="resetPassword">
+        <var-button style="width: 50%;" text type="primary" @click="resetPassword">
           忘记密码?
         </var-button>
       </template>

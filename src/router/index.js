@@ -58,6 +58,13 @@ const routes = [
     path: "/competition",
     component: () => import("views/Competition"),
   },
+  {
+    path: "/AdminLogin",
+    component: () => import("views/AdminLogin"),
+    meta: {
+      title: '管理员登录'
+    }
+  }
 ]
 
 const router = createRouter({

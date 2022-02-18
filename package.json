@@ -10,6 +10,8 @@
     "@varlet/ui": "^1.26.1",
     "axios": "^0.26.0",
     "core-js": "^3.6.5",
+    "open-browser-webpack-plugin": "^0.0.5",
+    "sass-loader": "^12.6.0",
     "vue": "^3.0.0",
     "vue-cookies": "^1.7.4",
     "vue-picture-cropper": "^0.5.1",
@@ -22,6 +24,7 @@
     "@vue/cli-plugin-vuex": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "@vue/compiler-sfc": "^3.0.0",
-    "unplugin-vue-components": "^0.17.18"
+    "unplugin-vue-components": "^0.17.18",
+    "webpack": "^4.42.0"
   }
 }

@@ -1,6 +1,6 @@
 <template>
-  <pc-nav-bar/>
-  <pe-tab-bar :active="active"/>
+  <pc-nav-bar v-if="isAdmin"/>
+  <pe-tab-bar v-if="isAdmin" :active="active"/>
 
   <div id="content">
     <router-view></router-view>
@@ -23,6 +23,7 @@
       return {
         active: 0,
         night: false,
+        isAdmin: true
       }
     },
     watch: {

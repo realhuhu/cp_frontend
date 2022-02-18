@@ -46,6 +46,11 @@
         :src="icon"
         @click.stop="avatar_click"
       />
+
+      <var-button style="width: 20%" text type="primary" @click="adminLogin">
+        admin
+      </var-button>
+
       <div class="var-elevation--1" id="popup" v-if="show_user_info" @click="show_user_info=false">
         <div id="options-wrap">
           <var-image
@@ -119,6 +124,9 @@
         } else {
           this.$router.replace("/login?next=/home")
         }
+      },
+      adminLogin() {
+        this.$router.replace("/AdminLogin?next=/home")
       },
       logout() {
         this.$cookies.remove("token")
@@ -211,6 +219,11 @@
 
     #avatar {
       margin: 10px;
+    }
+
+    #adminLog{
+      margin: 10px;
+      line-height: 26px;
     }
 
     #popup {
