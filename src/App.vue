@@ -1,12 +1,16 @@
 <template>
-  <pc-nav-bar v-if="isAdmin"/>
-  <pe-tab-bar v-if="isAdmin" :active="active"/>
+  <pc-nav-bar v-if="!is_admin"/>
+  <pe-tab-bar v-if="!is_admin" :active="active"/>
 
-  <div id="content">
+  <div v-if="!is_admin" id="content">
     <router-view></router-view>
   </div>
 
-  <var-back-top style="right: 15%;" :duration="300"/>
+  <div v-else id="admin-content">
+    <router-view></router-view>
+  </div>
+
+  <var-back-top :duration="300"/>
 </template>
 
 <script>
@@ -23,12 +27,13 @@
       return {
         active: 0,
         night: false,
-        isAdmin: true
+        is_admin: false
       }
     },
     watch: {
       "$route"() {
         let index = ["/home", "/competition", "/profile"].indexOf(window.location.pathname)
+        if (window.location.pathname.indexOf("admin") !== -1) this.is_admin = true
         this.active = index
       }
     },
@@ -61,6 +66,9 @@
       min-height: calc(70vh - 50px);
     }
 
+    #admin-content {
+      margin: 80px 0 0 250px;
+    }
 
   }
 

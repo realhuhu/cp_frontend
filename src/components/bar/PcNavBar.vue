@@ -47,9 +47,6 @@
         @click.stop="avatar_click"
       />
 
-      <var-button style="width: 20%" text type="primary" @click="adminLogin">
-        admin
-      </var-button>
 
       <div class="var-elevation--1" id="popup" v-if="show_user_info" @click="show_user_info=false">
         <div id="options-wrap">
@@ -81,6 +78,11 @@
           <div class="btn" @click="this.$router.replace('change-password')">
             <var-icon class="btn-icon-left" size="20" name="cog-outline"/>
             修改密码
+            <var-icon class="btn-icon-right" size="20" name="chevron-right"/>
+          </div>
+          <div class="btn" @click="this.$router.replace('reset-password')">
+            <var-icon class="btn-icon-left" size="20" name="cellphone"/>
+            找回密码
             <var-icon class="btn-icon-right" size="20" name="chevron-right"/>
           </div>
 
@@ -124,9 +126,6 @@
         } else {
           this.$router.replace("/login?next=/home")
         }
-      },
-      adminLogin() {
-        this.$router.replace("/AdminLogin?next=/home")
       },
       logout() {
         this.$cookies.remove("token")
@@ -219,11 +218,6 @@
 
     #avatar {
       margin: 10px;
-    }
-
-    #adminLog{
-      margin: 10px;
-      line-height: 26px;
     }
 
     #popup {

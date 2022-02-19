@@ -135,6 +135,8 @@
           }
         ).then(res => {
           if (res.data.code === 104) {
+            this.$cookies.remove("token")
+            this.$store.commit("logout")
             this.active++
           } else {
             this.$tip({
