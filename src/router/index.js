@@ -71,6 +71,10 @@ const routes = [
         path: 'question-edit',
         component: () => import("views/admin/QuestionBankEdit"),
       },
+      {
+        path: 'upload-question',
+        component: () => import("views/admin/UploadQuestion")
+      }
     ],
     meta: {
       auth: 2,

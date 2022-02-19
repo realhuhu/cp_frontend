@@ -21,7 +21,7 @@
       <var-icon class="tab-icon" size="30px" name="notebook"/>
       题库信息
     </var-tab>
-    <var-tab class="tab">
+    <var-tab class="tab" @click="this.$router.replace(('/admin/upload-question'))">
       <var-icon class="tab-icon" size="30px" name="upload"/>
       上传题目
     </var-tab>
@@ -68,6 +68,8 @@
         raw: {
           "/admin/user": "用户管理 > 用户信息",
           "/admin/question-edit": "题库管理 > 题库信息",
+          "/admin/upload-question": "题库管理 > 上传题目",
+
         },
         route: ""
       }
