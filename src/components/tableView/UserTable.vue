@@ -1,164 +1,167 @@
 <template>
   <div style="margin: 100px 20px 0">
-    <super-table
-      title="用户信息"
-      v-if="init"
+    <dynamic-table
+      title="编辑用户"
+      :ready="ready"
       :heads="heads"
       :data="data"
       :total="total"
-      @reload="reload"
-      @search="to_search"
-      @clean="clean"
-      @filter="to_filter"
-      @patch="update"/>
+      @search="search"
+      @update="update"/>
   </div>
 </template>
 
 <script>
-  import SuperTable from "./SuperTable";
+  import DynamicTable from "./DynamicTable";
+
 
   export default {
     name: "UserTable",
     components: {
-      SuperTable
+      DynamicTable
     },
     data() {
       return {
         heads: [
           {
             title: "ID",
+            refer: "id",
             style: {
               width: "5%",
             },
-            refer: column => column["id"]
           },
           {
             title: "用户名",
-            edit: "username",
+            refer: "username",
+            editable: true,
             style: {
               width: "10%",
             },
-            refer: column => column["username"]
           },
           {
             title: "头像",
-            edit: "icon",
+            refer: "icon",
+            editable: true,
             style: {
               width: "10%",
             },
-            refer: column => column["icon"]
           },
           {
             title: "电话号码",
-            edit: "phone",
+            refer: "phone",
+            editable: true,
             style: {
               width: "10%",
             },
-            refer: column => column["phone"]
           },
           {
             title: "注册时间",
-            edit: "date_joined",
+            refer: "date_joined",
             style: {
               width: "20%",
             },
-            refer: column => column["date_joined"].substring(0, 19).replace("T", " ")
+            serialize: column => column["date_joined"].substring(0, 19).replace("T", " ")
           },
           {
-            title: "是否被封号",
-            edit: "is_active",
+            title: "状态",
+            refer: "is_active",
+            editable: true,
+            filter: true,
+            edit_type: "select",
             style: {
               width: "10%",
             },
-            refer: column => column["is_active"] ? "否" : "是"
+            serialize: column => column["is_active"] ? "正常" : "屏蔽",
+            deserialize: raw => raw === "正常",
+            options: [
+              "正常",
+              "屏蔽",
+            ]
           },
           {
-            title: "是否为管理员",
-            edit: "is_superuser",
+            title: "管理员",
+            refer: "is_superuser",
+            editable: true,
+            filter: true,
+            edit_type: "select",
             style: {
               width: "10%",
+              textAlign: "center"
             },
-            refer: column => column["is_superuser"] ? "是" : "否"
-          }
+            tag: "chip",
+            tag_style: {
+              cursor: "pointer",
+              margin: "0 30%",
+              backgroundColor: "#4ebaee",
+              fontWeight: "bold",
+              color: "white"
+            },
+            serialize: column => column["is_superuser"] ? "是" : "否",
+            deserialize: raw => raw === "是",
+            options: [
+              "是",
+              "否",
+            ]
+          },
+
         ],
         total: 0,
         data: null,
-        search: "",
-        query: [],
-        init: false
+        ready: false
       }
     },
     methods: {
-      reload(page, size) {
-        let params = {
-          page: page,
-          limit: size,
-          search: this.search
-        }
-        for (let i of this.query) {
-          if (i.selected) {
-            params[i.refer] = i.selected
-          }
-        }
+      search(query) {
+        this.ready = false
         this.$ajax.api.get(
-          "admin/user/",
-          {
-            params
-          }
+          "admin/user/?" + query,
         ).then(res => {
           if (res.data.msg !== "错误") {
             this.data = res.data.result['results']
             this.total = res.data.result['count']
           } else {
             this.$tip({
-              content: Object.values(res.data.result).map(x=>x[0]).join("\n"),
+              content: res.data.result,
               type: "warning",
               duration: 3000,
             })
           }
+          this.ready = true
         }).catch(err => {
           this.$tip({
             content: err,
             type: "error",
             duration: 3000,
           })
+          this.ready = true
         })
       },
-      to_search(search) {
-        this.search = search
-        this.reload(1, 10)
-      },
-      clean() {
-        this.search = ""
-        this.reload(1, 10)
-      },
-      to_filter(query) {
-        console.log(query);
-        this.query = query
-        this.reload(1, 10)
-      },
-      update(id, key, value) {
+      update(id, data) {
         this.$ajax.api.patch(
           `admin/user/${id}/`,
-          {
-            [key]: value
-          }
+          data
         ).then(res => {
           if (res.data.msg !== "错误") {
-            console.log(res.data);
+            this.$tip({
+              content: "已更新",
+              type: "success",
+              duration: 3000,
+            })
           } else {
             this.$tip({
-              content:Object.values(res.data.result).map(x=>x[0]).join("\n"),
+              content: res.data.result,
               type: "warning",
               duration: 3000,
             })
           }
+          this.ready = true
         }).catch(err => {
           this.$tip({
             content: err,
             type: "error",
             duration: 3000,
           })
+          this.ready = true
         })
       }
     },
@@ -169,10 +172,10 @@
         if (res.data.msg !== "错误") {
           this.data = res.data.result['results']
           this.total = res.data.result['count']
-          this.init = true
+          this.ready = true
         } else {
           this.$tip({
-            content:Object.values(res.data.result).map(x=>x[0]).join("\n"),
+            content: res.data.result,
             type: "warning",
             duration: 3000,
           })

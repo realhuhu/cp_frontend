@@ -128,7 +128,6 @@
           }
         }
 
-
         this.$ajax.api.post(
           url,
           data
