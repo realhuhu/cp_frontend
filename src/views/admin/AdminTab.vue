@@ -48,7 +48,9 @@
 
     <span id="username">{{user.username}}</span>
   </div>
+
   <router-view/>
+
   <div style="height: 30vh"></div>
 </template>
 

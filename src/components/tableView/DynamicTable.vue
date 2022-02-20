@@ -63,8 +63,9 @@
               :simple="false"
               :current="page"
               :total="total"
-              :size-option="[10]"
+              :show-size-changer="false"
               @change="paginate"
+              show-quick-jumper
             />
           </div>
         </template>
@@ -136,11 +137,13 @@
         this.popup_value = head.serialize ? head.serialize(column) : column[head.refer]
         this.popup = true
       },
-      search() {
+      search(flag) {
+        if (flag) this.page = 1
         let query_obj = {
-          page: 1,
+          page: this.page,
           limit: 10
         }
+        console.log(query_obj);
 
         if (this.search_text) {
           query_obj.search = this.search_text
