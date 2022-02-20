@@ -189,7 +189,7 @@
             this.total = res.data.result['count']
           } else {
             this.$tip({
-              content: Object.values(res.data.result).map(x => x[0]).join("\n"),
+              content: res.data.result,
               type: "warning",
               duration: 3000,
             })
@@ -243,7 +243,7 @@
           this.ready = true
         } else {
           this.$tip({
-            content: Object.values(res.data.result).map(x => x[0]).join("\n"),
+            content: res.data.result,
             type: "warning",
             duration: 3000,
           })

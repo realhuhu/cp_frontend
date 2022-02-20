@@ -138,7 +138,7 @@
       },
       search() {
         let query_obj = {
-          page: this.page,
+          page: 1,
           limit: 10
         }
 
@@ -153,7 +153,6 @@
           }
         }
 
-        console.log(query_obj);
         let query = Object.keys(query_obj).map(x => x + "=" + query_obj[x]).join("&")
         this.$emit("search", query)
       },
