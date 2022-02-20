@@ -21,18 +21,14 @@
       <var-icon class="tab-icon" size="30px" name="notebook"/>
       题库信息
     </var-tab>
-    <var-tab class="tab" @click="this.$router.replace(('/admin/upload-question'))">
+    <var-tab class="tab" @click="this.$router.replace('/admin/upload-question')">
       <var-icon class="tab-icon" size="30px" name="upload"/>
       上传题目
     </var-tab>
     <var-divider description="竞赛管理"/>
-    <var-tab class="tab">
+    <var-tab class="tab" @click="this.$router.replace('/admin/competition')">
       <var-icon class="tab-icon" size="30px" name="format-list-checkbox"/>
       竞赛列表
-    </var-tab>
-    <var-tab class="tab">
-      <var-icon class="tab-icon" size="30px" name="file-document-outline"/>
-      竞赛详情
     </var-tab>
     <var-tab class="tab">
       <var-icon class="tab-icon" size="30px" name="plus"/>
@@ -44,14 +40,17 @@
     <span>
       <var-icon style="margin: 25px 10px 25px 50px" size="30px" name="menu-open"/>
     </span>
-    <span>当前：{{route}}</span>
+    <span>当前：{{title}}</span>
 
     <span id="username">{{user.username}}</span>
   </div>
 
-  <router-view/>
+  <div style="padding: 30px">
+    <router-view/>
+    <div style="height: 30vh"></div>
 
-  <div style="height: 30vh"></div>
+  </div>
+
 </template>
 
 <script>
@@ -60,20 +59,46 @@
     watch: {
       "$route"() {
         let path = window.location.pathname
-        this.route = this.raw[path]
-        this.active = Object.keys(this.raw).indexOf(path)
+        for (let i of this.data) {
+          if (i.re.test(path)) {
+            this.active = i.active
+            this.title = i.title
+          }
+        }
       }
     },
     data() {
       return {
         active: 0,
-        raw: {
-          "/admin/user": "用户管理 > 用户信息",
-          "/admin/question-edit": "题库管理 > 题库信息",
-          "/admin/upload-question": "题库管理 > 上传题目",
-
-        },
-        route: ""
+        re_pattens: [],
+        data: [
+          {
+            re: /^\/admin\/user$/,
+            title: "用户管理 > 用户信息",
+            active: 0
+          },
+          {
+            re: /^\/admin\/question-edit$/,
+            title: "题库管理 > 题库信息",
+            active: 1
+          },
+          {
+            re: /^\/admin\/upload-question$/,
+            title: "题库管理 > 上传题目",
+            active: 2
+          },
+          {
+            re: /^\/admin\/competition\/[0-9]*$/,
+            title: "竞赛管理 > 竞赛详情",
+            active: 3
+          },
+          {
+            re: /^\/admin\/competition\/$/,
+            title: "竞赛管理 > 竞赛列表",
+            active: 3
+          }
+        ],
+        title: ""
       }
     },
     computed: {
@@ -86,9 +111,12 @@
     },
     created() {
       let path = window.location.pathname
-
-      this.route = this.raw[path]
-      this.active = Object.keys(this.raw).indexOf(path)
+      for (let i of this.data) {
+        if (i.re.test(path)) {
+          this.active = i.active
+          this.title = i.title
+        }
+      }
     }
   }
 </script>

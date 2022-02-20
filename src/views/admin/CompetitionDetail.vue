@@ -1,25 +1,45 @@
 <template>
-  <dynamic-table
-    title="编辑题库"
-    :ready="ready"
-    :heads="heads"
-    :data="data"
-    :total="total"
-    @search="search"
-    @update="update"/>
+  <var-card title="竞赛详情">
+    <template #extra>
+      <div v-if="ready" style="margin: 20px">
+        <div style="font-size: 30px;font-weight: bolder;line-height: 80px">
+          {{data.title}}
+          <var-chip :type="data.is_active?'success':'warning'">{{data.is_active?"正常":"屏蔽"}}</var-chip>
+        </div>
+        <div style="font-size: 20px">
+          <span style="margin: 20px 50px 0 0">开始时间：{{data.start_time.replace("T"," ")}}</span>
+          <span style="margin: 20px 50px 0 0">结束时间：{{data.end_time.replace("T"," ")}}</span>
+          <span style="margin: 20px 50px 0 0">答题限时:{{data.time_limit}}分钟</span>
+        </div>
+
+      </div>
+      <div style="margin: 10px">
+        <DynamicTable
+          title="题目"
+          :ready="ready"
+          :heads="heads"
+          :data="table_data"
+          :total="total"
+          @search="search"
+          @update="update"
+        />
+      </div>
+    </template>
+  </var-card>
 </template>
 
 <script>
-  import DynamicTable from "./DynamicTable";
-
+  import DynamicTable from "components/tableView/DynamicTable";
 
   export default {
-    name: "QuestionBankTable",
+    name: "CompetitionDetail",
     components: {
       DynamicTable
     },
     data() {
       return {
+        data: null,
+        ready: false,
         heads: [
           {
             title: "ID",
@@ -171,74 +191,23 @@
           },
         ],
 
-        total: 0,
-        data: null,
-        ready: false
+        table_data: null,
+        total: null,
       }
     },
-    methods: {
-      search(query) {
-        this.ready = false
-        this.$ajax.api.get(
-          "admin/question-bank/?" + query,
-        ).then(res => {
-          if (res.data.msg !== "错误") {
-            this.data = res.data.result['results']
-            this.total = res.data.result['count']
-          } else {
-            this.$tip({
-              content: res.data.result,
-              type: "warning",
-              duration: 3000,
-            })
-          }
-          this.ready = true
-        }).catch(err => {
-          this.$tip({
-            content: err,
-            type: "error",
-            duration: 3000,
-          })
-          this.ready = true
-        })
-      },
-      update(id, data) {
-        this.$ajax.api.patch(
-          `admin/question-bank/${id}/`,
-          data
-        ).then(res => {
-          if (res.data.msg !== "错误") {
-            this.$tip({
-              content: "已更新",
-              type: "success",
-              duration: 3000,
-            })
-          } else {
-            this.$tip({
-              content: res.data.result,
-              type: "warning",
-              duration: 3000,
-            })
-          }
-          this.ready = true
-        }).catch(err => {
-          this.$tip({
-            content: err,
-            type: "error",
-            duration: 3000,
-          })
-          this.ready = true
-        })
+    methods:{
+      search(){
+
       }
     },
     beforeCreate() {
       this.$ajax.api.get(
-        "admin/question-bank/",
+        `admin/competition/${this.$route.params.id}/`,
       ).then(res => {
         if (res.data.msg !== "错误") {
-          this.data = res.data.result['results']
-          this.total = res.data.result['count']
-          this.ready = true
+          this.data = res.data.result
+          this.total = this.data.questions.length
+          this.table_data = this.data.questions.slice(0, 10)
         } else {
           this.$tip({
             content: res.data.result,
@@ -246,17 +215,22 @@
             duration: 3000,
           })
         }
+        this.ready = true
       }).catch(err => {
         this.$tip({
           content: err,
           type: "error",
           duration: 3000,
         })
+        this.ready = true
       })
     }
   }
 </script>
 
 <style scoped>
-
+  #back {
+    float: right;
+    margin: 0 50px;
+  }
 </style>

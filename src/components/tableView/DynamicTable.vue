@@ -38,6 +38,7 @@
         <thead>
         <tr>
           <th :style="head.style" v-for="head in heads">{{head.title}}</th>
+          <th v-if="extend" :style="extend.style.head">{{extend.title}}</th>
         </tr>
         </thead>
         <tbody>
@@ -52,6 +53,9 @@
             <div v-else :style="head.tag_style">
               {{heads[index].serialize?heads[index].serialize(column):column[heads[index].refer]}}
             </div>
+          </td>
+          <td v-if="extend" :style="extend.style.body" @click="extra(column)">
+            <slot name="extend"></slot>
           </td>
         </tr>
         </tbody>
@@ -100,11 +104,14 @@
       title: String,
       total: Number,
       heads: Array,
-      data: Array
+      data: Array,
+
+      extend: null
     },
     emits: [
       "search",
       "update",
+      "extra",
     ],
     data() {
       return {
@@ -143,7 +150,6 @@
           page: this.page,
           limit: 10
         }
-        console.log(query_obj);
 
         if (this.search_text) {
           query_obj.search = this.search_text
@@ -170,6 +176,9 @@
         }
         this.$emit("update", id, data)
         this.popup = false
+      },
+      extra(column) {
+        this.$emit("extra",column);
       }
     },
   }

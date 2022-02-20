@@ -75,6 +75,14 @@ const routes = [
       {
         path: 'upload-question',
         component: () => import("views/admin/UploadQuestion")
+      },
+      {
+        path: 'competition',
+        component: () => import("views/admin/CompetitionList")
+      },
+      {
+        path: 'competition/:id',
+        component: () => import("views/admin/CompetitionDetail")
       }
     ],
     meta: {
@@ -93,13 +101,13 @@ router.beforeEach((to, from, next) => {
   to.matched.some(route => {
     let inter = setInterval(() => {
       if (store.state.is_init) {
-        if (route.meta.auth===undefined) {
+        if (route.meta.auth === undefined) {
           next()
         } else {
           if (route.meta.auth === 1 && !store.state.is_login) {
             next({path: "/login", query: {next: route.path}})
           } else if (route.meta.auth === 0 && store.state.is_login) {
-            next(to.query.next||"/home")
+            next(to.query.next || "/home")
           } else if (route.meta.auth === 2 && !store.state.is_superuser) {
             next({path: "/home"})
           } else {
