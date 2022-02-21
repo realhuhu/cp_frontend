@@ -1,15 +1,16 @@
 <template>
   <var-card title="竞赛详情">
     <template #extra>
-      <div v-if="ready" style="margin: 20px">
+      <div v-if="init" style="margin: 20px">
         <div style="font-size: 30px;font-weight: bolder;line-height: 80px">
-          {{data.title}}
-          <var-chip :type="data.is_active?'success':'warning'">{{data.is_active?"正常":"屏蔽"}}</var-chip>
+          {{desc.title}}
+          <var-chip :type="desc.is_active?'success':'warning'">{{desc.is_active?"正常":"屏蔽"}}</var-chip>
         </div>
         <div style="font-size: 20px">
-          <span style="margin: 20px 50px 0 0">开始时间：{{data.start_time.replace("T"," ")}}</span>
-          <span style="margin: 20px 50px 0 0">结束时间：{{data.end_time.replace("T"," ")}}</span>
-          <span style="margin: 20px 50px 0 0">答题限时:{{data.time_limit}}分钟</span>
+          <span style="margin: 20px 50px 0 0">开始时间：{{desc.start_time.replace("T"," ")}}</span>
+          <span style="margin: 20px 50px 0 0">结束时间：{{desc.end_time.replace("T"," ")}}</span>
+          <span style="margin: 20px 50px 0 0">答题限时:{{desc.time_limit}}分钟</span>
+          <span style="margin: 20px 50px 0 0">题目数:{{total}}题</span>
         </div>
 
       </div>
@@ -18,7 +19,7 @@
           title="题目"
           :ready="ready"
           :heads="heads"
-          :data="table_data"
+          :data="data"
           :total="total"
           @search="search"
           @update="update"
@@ -38,12 +39,14 @@
     },
     data() {
       return {
+        desc: null,
         data: null,
+        init: false,
         ready: false,
         heads: [
           {
-            title: "ID",
-            refer: "id",
+            title: "题目ID",
+            refer: "qid",
             style: {
               width: "8%",
             },
@@ -112,7 +115,6 @@
             title: "类型",
             refer: "category",
             editable: true,
-            filter: true,
             edit_type: "select",
             style: {
               width: "8%",
@@ -133,7 +135,6 @@
             title: "难度",
             refer: "difficulty",
             editable: true,
-            filter: true,
             edit_type: "select",
             style: {
               width: "8%",
@@ -167,7 +168,6 @@
             title: "状态",
             refer: "is_active",
             editable: true,
-            filter: true,
             edit_type: "select",
             style: {
               width: "8%",
@@ -190,14 +190,62 @@
             ]
           },
         ],
-
-        table_data: null,
-        total: null,
+        total: null
       }
     },
-    methods:{
-      search(){
-
+    methods: {
+      search(query) {
+        this.ready = false
+        this.$ajax.api.get(
+          `admin/question-bank/?cid=${this.$route.params.id}&` + query,
+        ).then(res => {
+          if (res.data.msg !== "错误") {
+            this.data = res.data.result['results']
+            this.total = res.data.result['count']
+          } else {
+            this.$tip({
+              content: res.data.result,
+              type: "warning",
+              duration: 3000,
+            })
+          }
+          this.ready = true
+        }).catch(err => {
+          this.$tip({
+            content: err,
+            type: "error",
+            duration: 3000,
+          })
+          this.ready = true
+        })
+      },
+      update(id, data) {
+        this.$ajax.api.patch(
+          `admin/question-bank/${id}/`,
+          data
+        ).then(res => {
+          if (res.data.msg !== "错误") {
+            this.$tip({
+              content: "已更新",
+              type: "success",
+              duration: 3000,
+            })
+          } else {
+            this.$tip({
+              content: res.data.result,
+              type: "warning",
+              duration: 3000,
+            })
+          }
+          this.ready = true
+        }).catch(err => {
+          this.$tip({
+            content: err,
+            type: "error",
+            duration: 3000,
+          })
+          this.ready = true
+        })
       }
     },
     beforeCreate() {
@@ -205,9 +253,30 @@
         `admin/competition/${this.$route.params.id}/`,
       ).then(res => {
         if (res.data.msg !== "错误") {
-          this.data = res.data.result
-          this.total = this.data.questions.length
-          this.table_data = this.data.questions.slice(0, 10)
+          this.desc = res.data.result
+        } else {
+          this.$tip({
+            content: res.data.result,
+            type: "warning",
+            duration: 3000,
+          })
+        }
+        this.init = true
+      }).catch(err => {
+        this.$tip({
+          content: err,
+          type: "error",
+          duration: 3000,
+        })
+        this.init = true
+      })
+
+      this.$ajax.api.get(
+        `admin/question-bank/?cid=${this.$route.params.id}`,
+      ).then(res => {
+        if (res.data.msg !== "错误") {
+          this.data = res.data.result.results
+          this.total = res.data.result['count']
         } else {
           this.$tip({
             content: res.data.result,

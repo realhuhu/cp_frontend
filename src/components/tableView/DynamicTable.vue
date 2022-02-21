@@ -168,7 +168,7 @@
       update() {
         let column = this.popup_column
         let head = this.popup_head
-        let id = column.id
+        let id = Number(column[this.heads[0].refer])
         let value = head.deserialize ? head.deserialize(this.popup_value) : this.popup_value
         column[head.refer] = value
         let data = {
@@ -178,7 +178,7 @@
         this.popup = false
       },
       extra(column) {
-        this.$emit("extra",column);
+        this.$emit("extra", column);
       }
     },
   }
