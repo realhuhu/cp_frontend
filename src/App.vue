@@ -33,7 +33,7 @@
     watch: {
       "$route"() {
         let index = ["/home", "/competition", "/profile"].indexOf(window.location.pathname)
-        if (window.location.pathname.indexOf("admin") !== -1) this.is_admin = true
+        this.is_admin = window.location.pathname.indexOf("admin") !== -1
         this.active = index
       }
     },

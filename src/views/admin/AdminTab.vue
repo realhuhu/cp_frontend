@@ -34,7 +34,11 @@
       <var-icon class="tab-icon" size="30px" name="plus"/>
       新建竞赛
     </var-tab>
-    <div id="foot"></div>
+    <div id="foot">
+      <div id="bottom">
+        <img id="logo" src="~assets/img/logo.png" alt="" style="color: green;" @click="this.$router.replace('/home')">
+      </div>
+    </div>
   </var-tabs>
   <div id="banner">
     <span>
@@ -42,7 +46,10 @@
     </span>
     <span>当前：{{title}}</span>
 
+    <span style="float: right;padding: 0 50px 0 0">
+      <var-button type="warning" size="small" @click="logout">退出登录</var-button></span>
     <span id="username">{{user.username}}</span>
+
   </div>
 
   <div style="padding: 30px">
@@ -109,6 +116,13 @@
         return this.$settings.cos_url + (this.$store.state.user.icon || "icon/login.jpg")
       },
     },
+    methods: {
+      logout() {
+        this.$cookies.remove("token")
+        this.$store.commit("logout")
+        this.$router.replace("/login")
+      },
+    },
     created() {
       let path = window.location.pathname
       for (let i of this.data) {
@@ -170,6 +184,20 @@
     height: 50vh;
   }
 
+  #bottom {
+    position: absolute;
+    bottom: 0;
+  }
+
+  #logo {
+    width: 150px;
+    margin: 50px;
+  }
+
+  #logo:hover {
+    cursor: pointer;
+  }
+
   #banner {
     position: fixed;
     left: 250px;
@@ -184,6 +212,6 @@
     font-weight: bolder;
     float: right;
     color: #444;
-    margin-right: 70px;
+    margin-right: 10px;
   }
 </style>
