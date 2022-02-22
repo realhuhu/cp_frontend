@@ -83,6 +83,10 @@ const routes = [
       {
         path: 'competition/:id',
         component: () => import("views/admin/CompetitionDetail")
+      },
+      {
+        path: 'create-competition',
+        component: () => import("views/admin/CreateCompetition")
       }
     ],
     meta: {

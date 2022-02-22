@@ -9,7 +9,7 @@
         <div style="font-size: 20px">
           <span style="margin: 20px 50px 0 0">开始时间：{{desc.start_time.replace("T"," ")}}</span>
           <span style="margin: 20px 50px 0 0">结束时间：{{desc.end_time.replace("T"," ")}}</span>
-          <span style="margin: 20px 50px 0 0">答题限时:{{desc.time_limit}}分钟</span>
+          <span v-if="desc.time_limit" style="margin: 20px 50px 0 0">答题限时:{{desc.time_limit}}分钟</span>
           <span style="margin: 20px 50px 0 0">题目数:{{total}}题</span>
         </div>
 

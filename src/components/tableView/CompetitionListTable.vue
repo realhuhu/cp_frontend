@@ -60,7 +60,7 @@
             style: {
               width: "15%",
             },
-            serialize: column => column["start_time"].replace("T", " "),
+            serialize: column => column["end_time"].replace("T", " "),
             deserialize: raw => raw.replace(" ", "T")
           },
           {
@@ -70,7 +70,8 @@
             style: {
               width: "10%",
             },
-            serialize: column => column["time_limit"]
+            serialize: column => column["time_limit"] || "不限时",
+            deserialize: raw => raw === "不限时" ? null : raw
           },
           {
             title: "参与人数",

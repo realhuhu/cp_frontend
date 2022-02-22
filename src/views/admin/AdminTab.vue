@@ -30,7 +30,7 @@
       <var-icon class="tab-icon" size="30px" name="format-list-checkbox"/>
       竞赛列表
     </var-tab>
-    <var-tab class="tab">
+    <var-tab class="tab" @click="this.$router.replace('/admin/create-competition')">
       <var-icon class="tab-icon" size="30px" name="plus"/>
       新建竞赛
     </var-tab>
@@ -100,9 +100,14 @@
             active: 3
           },
           {
-            re: /^\/admin\/competition\/$/,
+            re: /^\/admin\/competition$/,
             title: "竞赛管理 > 竞赛列表",
             active: 3
+          },
+          {
+            re: /^\/admin\/create-competition$/,
+            title: "竞赛管理 > 新建竞赛",
+            active: 4
           }
         ],
         title: ""
@@ -202,6 +207,7 @@
     position: fixed;
     left: 250px;
     top: 0;
+    z-index: 1000;
     width: calc(100vw - 250px);
     line-height: 80px;
     background-color: #f6f6f6;
