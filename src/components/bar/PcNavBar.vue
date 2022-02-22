@@ -70,11 +70,6 @@
             个人信息
             <var-icon class="btn-icon-right" size="20" name="chevron-right"/>
           </div>
-          <div class="btn">
-            <var-icon class="btn-icon-left" size="20" name="format-list-checkbox"/>
-            参赛记录
-            <var-icon class="btn-icon-right" size="20" name="chevron-right"/>
-          </div>
           <div class="btn" @click="this.$router.replace('change-password')">
             <var-icon class="btn-icon-left" size="20" name="cog-outline"/>
             修改密码
