@@ -19,7 +19,6 @@
     </template>
   </var-app-bar>
 
-
   <div id="wrap" class="clear-fix">
     <div id="left">
       <var-swipe class="var-elevation--1" id="swipe" :autoplay="2000">
@@ -34,16 +33,6 @@
         </var-swipe-item>
       </var-swipe>
       <div class="space"/>
-      <div class="clear-fix" id="pe-card">
-        <div class="pe-btn-wrap">
-          <var-icon class="icon" size="40" name="format-list-checkbox"/>
-          <div>参赛记录</div>
-        </div>
-        <div class="pe-btn-wrap">
-          <var-icon class="icon" size="40" name="checkbox-marked-outline"/>
-          <div>答题练习</div>
-        </div>
-      </div>
 
       <div id="left-content">
         <var-tabs
@@ -83,15 +72,16 @@
               @load="load"
             >
               <var-cell :key="competition" v-for="competition in competitions">
-                <div class="competition-card">
+                <div class="competition-card" @click="pop(competition)">
                   <div class="competition-title">{{competition.title}}</div>
                   <div class="competition-time">
-                    <span style="margin-right: 30px">开始时间：{{competition.start_time.replace("T"," ")}}</span>
-                    <span>结束时间：{{competition.end_time.replace("T"," ")}}</span>
+                    <span
+                      style="margin-right: 30px">开始时间：{{competition.start_time.substring(0,16).replace("T"," ")}}</span>
+                    <span>结束时间：{{competition.end_time.substring(0,16).replace("T"," ")}}</span>
                   </div>
                   <div class="competition-time-pe">
-                    <div>开始时间：{{competition.start_time.replace("T"," ")}}</div>
-                    <div>结束时间：{{competition.end_time.replace("T"," ")}}</div>
+                    <div>开始时间：{{competition.start_time.substring(0,16).replace("T"," ")}}</div>
+                    <div>结束时间：{{competition.end_time.substring(0,16).replace("T"," ")}}</div>
                   </div>
                 </div>
               </var-cell>
@@ -99,10 +89,6 @@
           </var-tab-item>
 
           <var-tab-item>
-            很多人不长眼睛，嚣张都靠武器。
-            赤手空拳就缩成蚂蚁。
-            不用麻烦了，不用麻烦了。
-            不用麻烦，不用麻烦了，不用麻烦了。
           </var-tab-item>
         </var-tabs-items>
       </div>
@@ -135,6 +121,32 @@
 
     </div>
 
+    <var-popup style="border-radius: 10px" v-model:show="is_popup">
+      <div id="popup-wrap">
+        <div id="title">{{info.title}}
+          <var-chip size="small" style="margin: 8px 0" :type="chip_style.type">{{chip_style.text}}</var-chip>
+        </div>
+        <div class="time">开始时间：{{info.start_time.substring(0,16).replace("T"," ")}}</div>
+        <div class="time">结束时间：{{info.end_time.substring(0,16).replace("T"," ")}}</div>
+        <div id="tip">题数：{{info.questions}}（{{info.time_limit?`限时${info.time_limit}分钟`:"不限时"}}）</div>
+        <div id="answer-num">已有{{info.answer_num}}人作答</div>
+        <div id="btn">
+          <var-button block type="success" v-if="chip_style.type==='warning'" disabled>
+            还未开始
+          </var-button>
+          <var-button
+            block
+            type="success"
+            v-if="chip_style.type==='success'"
+            @click="this.$router.push(`/competition/${this.info.id}`)">
+            开始答题
+          </var-button>
+          <var-button block type="info" v-if="chip_style.type==='danger'">
+            查看排行榜
+          </var-button>
+        </div>
+      </div>
+    </var-popup>
   </div>
 </template>
 
@@ -148,14 +160,17 @@
         finished: false,
         next: false,
         active: 0,
-        value: ""
+        value: "",
+        is_popup: false,
+        info: null,
+        chip_style: null
       }
     },
     methods: {
       search() {
         this.competitions = []
         this.$ajax.api.get(
-          `competition/?search=${this.value}` ,
+          `competition/?search=${this.value}`,
         ).then(res => {
           if (res.data.msg !== "错误") {
             for (let i of res.data.result.results) {
@@ -206,7 +221,32 @@
             duration: 1000,
           })
         })
-      }
+      },
+      pop(competition) {
+        this.is_popup = true
+        this.info = competition
+
+        let start = new Date(competition.start_time)
+        let end = new Date(competition.end_time)
+        let now = new Date()
+        if (now < start) {
+          this.chip_style = {
+            type: "warning",
+            text: "还未开始"
+          }
+        } else if (start < now && now < end) {
+          this.chip_style = {
+            type: "success",
+            text: "开放中"
+          }
+        } else if (now > end) {
+          this.chip_style = {
+            type: "danger",
+            text: "已结束"
+          }
+        }
+
+      },
     }
   }
 </script>
@@ -316,8 +356,14 @@
       color: #333333;
     }
 
+    #popup-wrap {
+      width: 500px;
+      border-radius: 20px;
+      padding: 20px;
+      line-height: 30px;
+    }
 
-    #app-bar, #pe-card, .competition-time-pe {
+    #app-bar, .competition-time-pe {
       display: none;
     }
   }
@@ -366,22 +412,6 @@
       object-fit: cover;
     }
 
-    #pe-card {
-      padding: 5px;
-      background-color: white;
-      margin-bottom: 10px;
-      border-radius: 0 0 5px 5px;
-    }
-
-    .pe-btn-wrap {
-      width: 60px;
-      float: left;
-      margin: 10px;
-      font-size: 10px;
-      text-align: center;
-      color: #333;
-    }
-
     .icon {
       margin: 0 10px;
     }
@@ -406,6 +436,11 @@
       color: #333333;
     }
 
+    #popup-wrap {
+      width: 90vw;
+      border-radius: 10px;
+      padding: 20px;
+    }
   }
 
   #search {
@@ -424,5 +459,20 @@
     border-radius: 5px;
     background-color: #fff;
     border: 1px dashed rgba(200, 200, 200, 0.8);
+  }
+
+  #title {
+    line-height: 40px;
+    font-size: 20px;
+    font-weight: bolder;
+  }
+
+  .time {
+    line-height: 30px;
+  }
+
+  #answer-num {
+    padding-bottom: 20px;
+    line-height: 30px;
   }
 </style>

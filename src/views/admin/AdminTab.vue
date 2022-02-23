@@ -1,5 +1,6 @@
 <template>
   <div id="background"/>
+
   <var-tabs
     id="tabs"
     class="vertical-tabs"
@@ -40,6 +41,7 @@
       </div>
     </div>
   </var-tabs>
+
   <div id="banner">
     <span>
       <var-icon style="margin: 25px 10px 25px 50px" size="30px" name="menu-open"/>
@@ -55,7 +57,6 @@
   <div style="padding: 30px">
     <router-view/>
     <div style="height: 30vh"></div>
-
   </div>
 
 </template>

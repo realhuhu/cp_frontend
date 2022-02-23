@@ -17,6 +17,30 @@ const routes = [
     }
   },
   {
+    path: "/exercise",
+    component: () => import("views/Exercise"),
+    meta: {
+      auth: 1,
+      title: '练习'
+    }
+  },
+  {
+    path: "/entries",
+    component: () => import("views/Entries"),
+    meta: {
+      auth: 1,
+      title: '参赛记录'
+    }
+  },
+  {
+    path: "/user-info",
+    component: () => import("views/UserInfo"),
+    meta: {
+      auth: 1,
+      title: '用户信息'
+    }
+  },
+  {
     path: "/login",
     component: () => import("views/Login"),
     meta: {
@@ -40,14 +64,6 @@ const routes = [
     }
   },
   {
-    path: "/user-info",
-    component: () => import("views/UserInfo"),
-    meta: {
-      auth: 1,
-      title: '用户信息'
-    }
-  },
-  {
     path: "/change-icon",
     component: () => import("views/ChangeIcon"),
     meta: {
@@ -56,9 +72,14 @@ const routes = [
     }
   },
   {
-    path: "/competition",
+    path: "/competition/:id",
     component: () => import("views/Competition"),
+    meta: {
+      auth: 1,
+      title: '答题页'
+    }
   },
+
   {
     path: "/admin",
     component: () => import("views/admin/AdminTab"),

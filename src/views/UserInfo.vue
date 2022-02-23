@@ -1,6 +1,18 @@
 <template>
   <div id="banner"/>
 
+  <var-app-bar
+    id="app-bar"
+    class="var-elevation--1"
+    title="用户信息"
+    title-position="center"
+    color="#f6f6f6"
+    style="font-weight: bolder;"
+    text-color="#333"
+  >
+  </var-app-bar>
+
+
   <div id="wrap">
     <var-card class="card" id="card">
       <template #extra>
@@ -132,8 +144,8 @@
             <span>修改密码</span>
           </div>
           <var-divider/>
-          <div class="pe-item">
-            <span>参赛记录</span>
+          <div class="pe-item" @click="this.$router.push('reset-password')">
+            <span>重置密码</span>
           </div>
         </template>
       </var-card>
@@ -325,7 +337,7 @@
         })
       },
       logout() {
-        this.$router.replace("/login")
+        this.$router.replace("/home")
         this.$cookies.remove("token")
         this.$store.commit("logout")
       }
@@ -407,7 +419,7 @@
       margin-top: 20px;
     }
 
-    #pe, #pe-2, #pe-3 {
+    #pe, #pe-2, #pe-3,#app-bar {
       display: none;
     }
   }
@@ -415,7 +427,7 @@
   @media screen and (max-width: 840px) {
     #wrap {
       width: 90vw;
-      margin: 20px 5vw;
+      margin: 70px 5vw;
     }
 
 
@@ -449,5 +461,15 @@
       margin: 0 10px;
       line-height: 25px;
     }
+
+    #app-bar {
+      height: 54px;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+    }
+
   }
 </style>

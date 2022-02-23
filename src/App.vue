@@ -1,6 +1,6 @@
 <template>
   <pc-nav-bar v-if="!is_admin"/>
-  <pe-tab-bar v-if="!is_admin" :active="active"/>
+  <pe-tab-bar v-if="!is_admin&&is_show" :active="active"/>
 
   <div v-if="!is_admin" id="content">
     <router-view></router-view>
@@ -26,15 +26,16 @@
     data() {
       return {
         active: 0,
-        night: false,
-        is_admin: false
+        is_admin: false,
+        is_show: false
       }
     },
     watch: {
       "$route"() {
-        let index = ["/home", "/competition", "/profile"].indexOf(window.location.pathname)
+        let index = ["/home", "/exercise", "/entries", "/user-info"].indexOf(window.location.pathname)
         this.is_admin = window.location.pathname.indexOf("admin") !== -1
         this.active = index
+        this.is_show = index !== -1
       }
     },
     beforeCreate() {

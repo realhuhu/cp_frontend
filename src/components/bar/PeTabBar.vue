@@ -13,9 +13,13 @@
       <var-icon name="home-outline"/>
       <div class="text">首页</div>
     </var-tab>
-    <var-tab @click="itemClick('competition')">
-      <var-icon name="menu"/>
-      <div class="text">竞赛列表</div>
+    <var-tab @click="itemClick('exercise')">
+      <var-icon name="checkbox-marked-outline"/>
+      <div class="text">练习</div>
+    </var-tab>
+    <var-tab @click="itemClick('entries')">
+      <var-icon name="format-list-checkbox"/>
+      <div class="text">参赛记录</div>
     </var-tab>
     <var-tab @click="itemClick('user-info')">
       <var-icon name="account-circle-outline"/>
@@ -28,17 +32,11 @@
   export default {
     name: "TabBar",
     props: {
-      active: Number
+      active: 0
     },
     data() {
       return {
         show: true
-      }
-    },
-    watch: {
-      "$route"() {
-        let index = ["/home", "/competition", "/user-info"].indexOf(window.location.pathname)
-        this.show = index !== -1
       }
     },
     methods: {
