@@ -10,7 +10,7 @@
     <router-view></router-view>
   </div>
 
-  <var-back-top :duration="300"/>
+  <var-back-top bottom="60px" :duration="300"/>
 </template>
 
 <script>

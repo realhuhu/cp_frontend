@@ -18,19 +18,7 @@
         </var-badge>
       </div>
 
-      <div id="search">
-        <var-input
-          :hint="false"
-          :line="false"
-          text-color="#333"
-          placeholder="输入竞赛名称..."
-          v-model="value"
-          clearable>
-          <template #prepend-icon>
-            <var-icon id="search-btn" name="magnify"/>
-          </template>
-        </var-input>
-      </div>
+
     </div>
 
     <var-divider class="divider" vertical/>
@@ -192,23 +180,7 @@
     }
 
 
-    #search {
-      float: right;
-      height: 30px;
-      margin: 15px;
-      padding: 2px 10px;
-      width: 25%;
-      border: 1px solid #f6f6f6;
-      border-radius: 10px;
-    }
 
-    #search-btn {
-      padding: 3px;
-      margin: 2px;
-      border-radius: 5px;
-      background-color: #fff;
-      border: 1px dashed rgba(200, 200, 200, 0.8);
-    }
 
     #message {
       float: right;

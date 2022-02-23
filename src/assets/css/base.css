@@ -27,36 +27,6 @@ a {
 
 
 
-.clear-fix::after {
-    clear: both;
-    content: "";
-    display: block;
-    width: 0;
-    height: 0;
-    visibility: hidden;
-}
 
-.clear-fix {
-    zoom: 1;
-}
-
-.left {
-    float: left;
-}
-
-.right {
-    float: right;
-}
-
-.card {
-    --card-footer-margin: 0;
-    --card-padding: 10px;
-    --card-footer-padding: 0
-}
-
-.dark-bold {
-    color: #333;
-    font-weight: bold;
-}
 
 

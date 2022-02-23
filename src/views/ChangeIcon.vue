@@ -213,5 +213,9 @@
       width: 100%;
       position: absolute
     }
+
+    #wrap {
+      display: none;
+    }
   }
 </style>
