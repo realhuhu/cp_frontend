@@ -7,6 +7,7 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@varlet/touch-emulator": "^1.26.2",
     "@varlet/ui": "^1.26.1",
     "axios": "^0.26.0",
     "core-js": "^3.6.5",

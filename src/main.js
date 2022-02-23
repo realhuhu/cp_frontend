@@ -9,6 +9,7 @@ import Snackbar from "@varlet/ui/es/snackbar";
 import Dialog from "@varlet/ui/es/dialog";
 import '@varlet/ui/es/dialog/style/index.js'
 import '@varlet/ui/es/snackbar/style/index.js'
+import '@varlet/touch-emulator'
 
 const app = createApp(App)
 

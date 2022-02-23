@@ -23,13 +23,13 @@
     <var-card class="card" id="card">
       <template #extra>
         <div v-if="!is_use_phone">
-          <username :placeholder="is_to_login? '用户名/手机号':'用户名'" v-model:username="username"/>
-          <password v-model:password="password"/>
+          <username :placeholder="is_to_login? '用户名/手机号':'用户名'" v-model:username="username" @keyup.enter="login"/>
+          <password v-model:password="password" @keyup.enter="login"/>
         </div>
 
         <div v-else>
-          <phone v-model:phone="username"/>
-          <msg-code v-model:code="password" :method="is_to_login?'login':'register'" :phone="username"/>
+          <phone v-model:phone="username" @keyup.enter="login"/>
+          <msg-code v-model:code="password" :method="is_to_login?'login':'register'" :phone="username" @keyup.enter="login"/>
         </div>
 
         <div v-if="!is_use_phone && !is_to_login">

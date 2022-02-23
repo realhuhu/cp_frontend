@@ -10,10 +10,11 @@
             />
           </var-col>
           <var-col span="4" offset="2">
-
             <var-input
-              placeholder="开始时间"
-              v-model="start_time"
+                placeholder="开始时间"
+                v-model="start_time"
+                clearable
+                @click="_clickStart"
             />
           </var-col>
           <var-col span="4" offset="2">
@@ -21,6 +22,8 @@
             <var-input
               placeholder="结束时间"
               v-model="end_time"
+              clearable
+              @click="_clickEnd"
             />
           </var-col>
         </var-row>
@@ -78,6 +81,24 @@
 
       <span style="float: right;padding: 0 50px 0 0">
       <var-button type="success" size="large" @click="create_competition">创建竞赛</var-button></span>
+
+      <var-popup  v-model:show="popup">
+        <div class="popup" v-if="isStart">
+          <div >{{isStart? "选择开始时间":"选择结束时间"}}</div>
+          <var-date-picker v-model="start_date" v-if="isSelectDate"></var-date-picker>
+          <var-time-picker v-model="start_moment" v-else format="24hr" />
+          <var-button block type="primary" v-if="isSelectDate" @click="isSelectDate=false">下一步</var-button>
+          <var-button block type="primary" v-else @click="updateTime">确定</var-button>
+        </div>
+        <div class="popup" v-else>
+          <div >{{isStart? "选择开始时间":"选择结束时间"}}</div>
+          <var-date-picker v-model="end_date" v-if="isSelectDate"></var-date-picker>
+          <var-time-picker v-model="end_moment" v-else format="24hr" />
+          <var-button block type="primary" v-if="isSelectDate" @click="isSelectDate=false">下一步</var-button>
+          <var-button block type="primary" v-else @click="updateTime">确定</var-button>
+        </div>
+
+      </var-popup>
     </template>
   </var-card>
 </template>
@@ -93,7 +114,11 @@
     data() {
       return {
         title: "",
+        start_date: "",
+        start_moment: "",
         start_time: "",
+        end_date: "",
+        end_moment: "",
         end_time: "",
         time_limit: null,
         question_num: null,
@@ -223,6 +248,10 @@
           }
         },
         total: 0,
+
+        popup: false,
+        isSelectDate: true,
+        isStart: true,
       }
     },
     methods: {
@@ -339,6 +368,49 @@
           })
           this.ready = true
         })
+      },
+      selectTime(TimeType) {
+        if(TimeType === 1){
+          this.isStart = true
+          this.popup = true
+          this.end_time = ''
+          this.end_date = ''
+          this.end_moment = ''
+        }else{
+          if(this.start_time === '')
+          {
+            this.$tip({
+              content: "请先填写开始时间",
+              type: "danger",
+              duration: 1000,
+            })
+          }else {
+            this.isStart = false
+            this.popup = true
+          }
+        }
+      },
+      updateTime() {
+        this.popup = false
+        this.isSelectDate = true
+        if(this.start_date !== '' && this.start_moment !== ''){
+          this.start_time = this.start_date + " " + this.start_moment
+        }
+        if(this.end_date !== '' && this.end_moment !== '') {
+          this.end_time = this.end_date + " " + this.end_moment
+        }
+      },
+      _clickStart(e){
+        if(e.target.tagName === 'I'){
+          return
+        }
+        this.selectTime(1)
+      },
+      _clickEnd(e){
+        if(e.target.tagName === 'I'){
+          return
+        }
+        this.selectTime(2)
       }
     }
   }
@@ -347,5 +419,10 @@
 <style scoped>
   #info {
     margin: 30px;
+  }
+  .popup {
+    width: 500px;
+    border-radius: 30px;
+    margin: 30px 50px;
   }
 </style>

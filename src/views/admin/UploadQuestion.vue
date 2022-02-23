@@ -1,5 +1,5 @@
 <template>
-  <var-card title="上传单题" class="uploadSingle" v-show="false">
+  <var-card title="上传单题" class="uploadSingle" v-if="isSingle">
     <template #extra>
       <var-form ref="form" :disabled="disabled" :readonly="readonly">
         <var-input
@@ -59,16 +59,22 @@
       <var-button block type="success" @click="upload">
         确认
       </var-button>
+      <var-button block text @click="isSingle = !isSingle">
+        上传多题
+      </var-button>
     </template>
   </var-card>
+    <var-card title="上传多题" class="uploadMultiple" v-else>
+      <template #extra>
+        <var-uploader v-model="files" @after-read="handleAfterRead" accept="application/vnd.ms-excel | application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
+        <var-divider description="使用说明" />
+        <div class="note">xxxxx</div>
+        <var-button block text @click="isSingle = !isSingle">
+          上传单题
+        </var-button>
+      </template>
+    </var-card>
 
-  <var-card title="上传多题" class="uploadMultiple">
-    <template #extra>
-      <var-uploader v-model="files" @after-read="handleAfterRead"/>
-      <var-divider dashed />
-      使用说明:
-    </template>
-  </var-card>
 </template>
 <script>
 import { reactive, ref } from 'vue'
@@ -103,18 +109,18 @@ export default {
 
     const files = ref([
       {
-        url: 'https://varlet.gitee.io/varlet-ui/cat.jpg',
-        cover: 'https://varlet.gitee.io/varlet-ui/cat.jpg',
+        url: 'https://varlet.gitee.io/varlet-ui/demo.xls',
+        cover: 'https://varlet.gitee.io/varlet-ui/cat.xls',
         state: 'loading'
       },
       {
-        url: 'https://varlet.gitee.io/varlet-ui/cat.jpg',
-        cover: 'https://varlet.gitee.io/varlet-ui/cat.jpg',
+        url: 'https://varlet.gitee.io/varlet-ui/cat.xls',
+        cover: 'https://varlet.gitee.io/varlet-ui/cat.xls',
         state: 'success'
       },
       {
-        url: 'https://varlet.gitee.io/varlet-ui/cat.jpg',
-        cover: 'https://varlet.gitee.io/varlet-ui/cat.jpg',
+        url: 'https://varlet.gitee.io/varlet-ui/cat.xls',
+        cover: 'https://varlet.gitee.io/varlet-ui/cat.xls',
         state: 'error'
       }
     ])
@@ -131,7 +137,9 @@ export default {
         answer: "",
         category: "",
         difficulty: "",
-      }
+      },
+      isSingle: true,
+
     }
   },
   methods: {
@@ -155,7 +163,7 @@ export default {
       ).then(res => {
 
       })
-    }
+    },
   }
 }
 </script>
@@ -163,9 +171,7 @@ export default {
 <style scoped>
   .uploadSingle{
     width: 300px;
-    margin-top: 15%;
     margin-left: 33%;
-
   }
   .uploadMultiple{
     width: 300px;
