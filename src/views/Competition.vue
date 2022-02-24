@@ -13,8 +13,11 @@
   >
   </var-app-bar>
 
-  <div v-if="ready" id="wrap">
-    <div v-if="info.time_limit" id="timer">
+  <div v-if="ready" class="var-elevation--5" id="wrap">
+    <div id="pc-title">
+      {{info.title}}
+    </div>
+    <div v-if="info.time_limit" id="timer" @end="upload(true)">
       <var-countdown :time="time_limit" format="HH 时 mm 分 ss 秒"/>
       <var-divider margin="0"/>
     </div>
@@ -66,6 +69,10 @@
     <div id="submit">
       <var-button block type="success" @click="submit">提交</var-button>
     </div>
+
+    <div id="tip">
+      按左右键或AD键可快速翻页
+    </div>
   </div>
 
   <div id="foot" v-if="ready" class="var-elevation--5">
@@ -80,6 +87,19 @@
     </div>
     <div v-for="(v,k) in questions" class="round" :class="{answered:v.answer}" @click="change_cursor(k)">
       <span class="round-text">{{k+1}}</span>
+    </div>
+  </div>
+
+  <div id="pc-answer" v-if="ready" class="var-elevation--5">
+    <div id="answer-title">答题卡</div>
+    <var-divider/>
+    <div style="min-height: 300px">
+      <div v-for="(v,k) in questions" class="round" :class="{answered:v.answer}" @click="change_cursor(k)">
+        <span class="round-text">{{k+1}}</span>
+      </div>
+    </div>
+    <div id="pc-submit">
+      <var-button block type="success" @click="submit">提交</var-button>
     </div>
   </div>
 </template>
@@ -118,7 +138,7 @@
               this.upload(true)
             }
           })
-        }else {
+        } else {
           this.upload(true)
         }
       },
@@ -130,7 +150,7 @@
             finish: finish
           }
         ).then(res => {
-          if(finish) {
+          if (finish) {
             this.$tip({
               content: "已提交",
               type: "success",
@@ -149,14 +169,14 @@
           this.$tip({
             content: "比赛还未开始",
             type: "warning",
-            duration: 1000,
+            duration: 3000,
           })
           this.$router.replace(`/home/`)
         } else if (res.data.code === 801) {
           this.$tip({
             content: "比赛已结束",
             type: "warning",
-            duration: 1000,
+            duration: 3000,
           })
           if (res.data.result.anwsered) {
             this.$router.replace(`/score/${this.$route.params.id}/`)
@@ -167,14 +187,14 @@
           this.$tip({
             content: "您已超时",
             type: "warning",
-            duration: 1000,
+            duration: 3000,
           })
           this.$router.replace(`/score/${this.$route.params.id}/`)
         } else if (res.data.code === 803) {
           this.$tip({
             content: "您已经答过题了",
             type: "warning",
-            duration: 1000,
+            duration: 3000,
           })
           this.$router.replace(`/score/${this.$route.params.id}/`)
         } else if (res.data.msg !== "错误") {
@@ -202,14 +222,156 @@
         })
       })
     },
+    mounted() {
+      let _this = this;
+      document.onkeydown = function (e) {
+        let key = window.event.keyCode;
+        console.log(key);
+        if (key === 65 || key === 37) {
+          _this.cursor_decrease()
+        }
+        if (key === 68 || key === 39) {
+          _this.cursor_increase()
+        }
+      };
+    }
   }
 </script>
 
 <style scoped>
   @media screen and (min-width: 840px) {
+    #app-bar, #popup, #mask, #foot, #submit {
+      display: none;
+    }
+
+    #background {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url(https://cp-1304907527.cos.ap-nanjing.myqcloud.com/static/background.jpg);
+      background-size: cover;
+      opacity: 0.4;
+      z-index: -1;
+    }
+
+    #wrap {
+      background-color: white;
+      position: fixed;
+      left: 2%;
+      top: 80px;
+      width: calc(95% - 400px);
+      border-radius: 20px;
+    }
+
+    #pc-title {
+      margin-top: 20px;
+      line-height: 60px;
+      text-indent: 30px;
+      font-size: 30px;
+      font-weight: bolder;
+    }
+
+    #timer {
+      line-height: 40px;
+      font-size: 20px;
+      text-indent: 30px;
+      color: #888;
+    }
+
+    #progress {
+      margin: 30px;
+      font-size: 20px;
+    }
+
+    #content {
+      margin: 30px;
+      min-height: 200px;
+    }
+
+    .option {
+      margin: 10px 30px;
+      height: 50px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      line-height: 50px;
+      text-indent: 20px;
+    }
+
+    #crease {
+      margin: 30px;
+    }
+
+    #tip {
+      margin: 0 30px 30px;
+      color: #aaa;
+    }
+
+    #pc-answer {
+      background-color: white;
+      position: fixed;
+      right: 2%;
+      top: 80px;
+      width: 400px;
+      border-radius: 20px;
+    }
+
+    #answer-title {
+      line-height: 70px;
+      font-size: 30px;
+      text-align: center;
+    }
+
+    .round {
+      margin: 2%;
+      width: 6%;
+      background-color: #f6f6f6;
+      border-radius: 50%;
+      display: inline-block;
+      text-align: center;
+      font-weight: bolder;
+    }
+
+    .round::before {
+      content: '';
+      display: inline-block;
+      padding-top: 100%;
+      height: 100%;
+      vertical-align: middle;
+    }
+
+    .round-text {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    #pc-submit {
+      margin: 30px;
+    }
+
+    #crease div, .option, .round {
+      cursor: pointer;
+    }
+
+    #crease div:hover {
+      color: #4ebaee;
+    }
+
+    .option:hover {
+      background-color: #cfedff;
+      border: 1px solid #cfedff;
+    }
+
+    .round:hover {
+      background-color: #cfedff;
+    }
   }
 
   @media screen and (max-width: 840px) {
+    #pc-title, #pc-answer, #tip {
+      display: none;
+    }
 
     #background {
       position: fixed;
@@ -259,10 +421,6 @@
       border: 1px solid #ddd;
     }
 
-    .active {
-      border: 1px solid #4ebaee;
-      color: #4ebaee;
-    }
 
     #progress {
       margin: 0 20px;
@@ -348,9 +506,16 @@
       vertical-align: middle;
     }
 
-    .answered {
-      background-color: #4ebaee;
-      color: white;
-    }
+
+  }
+
+  .active {
+    border: 1px solid #4ebaee;
+    color: #4ebaee;
+  }
+
+  .answered {
+    background-color: #4ebaee;
+    color: white;
   }
 </style>

@@ -58,7 +58,7 @@
     },
   }
 </script>
-<style>
+<style scoped>
   @import "assets/css/normalize.css";
 
   @media screen and (min-width: 840px) {

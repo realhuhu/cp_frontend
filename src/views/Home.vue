@@ -69,8 +69,7 @@
             <var-list
               :finished="finished"
               v-model:loading="loading"
-              @load="load"
-            >
+              @load="load">
               <var-cell :key="competition" v-for="competition in competitions">
                 <div class="competition-card" @click="pop(competition)">
                   <div class="competition-title">{{competition.title}}</div>
@@ -103,7 +102,7 @@
         <var-divider dashed/>
         <div id="card-btn-wrap">
           <div style="height: 10px;"></div>
-          <div class="card-btn">
+          <div class="card-btn" @click="this.$router.push('/entries')">
             <var-icon class="icon" size="20" name="format-list-checkbox"/>
             <span>参赛记录</span>
             <var-icon class="icon" style="float: right" size="20" name="chevron-right"/>
@@ -378,9 +377,9 @@
       left: 0;
       top: 0;
       width: 100%;
-      height: 100vw;
+      height: 100%;
       z-index: -1;
-      background-color: #f6f6f6;
+      background-color: #fafafa;
     }
 
     #app-bar {
@@ -418,7 +417,7 @@
 
     #left-content {
       width: 100%;
-      padding-bottom: 100px;
+      margin-bottom: 100px;
       background-color: #fafafa;
     }
 

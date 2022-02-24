@@ -1,4 +1,7 @@
 <template>
+  <div id="banner"/>
+
+
   <var-app-bar
     id="app-bar"
     class="var-elevation--1"
@@ -22,6 +25,9 @@
     <div id="time">
       用时：{{data.time_used}}秒
     </div>
+    <div id="btn">
+      <var-button type="success" block @click="this.$router.replace('/home')">返回主页</var-button>
+    </div>
   </div>
 
   <div id="calc" v-else>
@@ -44,6 +50,13 @@
       ).then(res => {
         if (res.data.code === 123) {
           this.data = res.data.result
+        } else if (res.data.code === 804) {
+          this.$tip({
+            content: "未参加比赛或未提交",
+            type: "warning",
+            duration: 3000,
+          })
+          this.$router.push("/home")
         }
         this.ready = true
       })
@@ -53,6 +66,44 @@
 
 <style scoped>
   @media screen and (min-width: 840px) {
+    #app-bar {
+      display: none;
+    }
+
+    #banner {
+      width: 100vw;
+      height: 8vw;
+      background-image: linear-gradient(to top, rgba(255, 255, 255, .8), rgba(255, 255, 255, 0)), url(https://cp-1304907527.cos.ap-nanjing.myqcloud.com/static/banner.jpg);
+      background-size: cover;
+      z-index: -1;
+    }
+
+    #wrap {
+      margin: 80px;
+    }
+
+    #icon {
+      text-align: center;
+    }
+
+    #btn {
+      width: 100px;
+      margin: 20px auto;
+    }
+
+    #calc {
+      line-height: 40px;
+      text-align: center;
+      margin: 80px 0;
+      font-size: 20px;
+      font-weight: bolder;
+    }
+
+    #score, #time {
+      line-height: 50px;
+      font-size: 30px;
+      text-align: center;
+    }
   }
 
   @media screen and (max-width: 840px) {
@@ -76,6 +127,10 @@
       line-height: 40px;
       font-size: 20px;
       text-align: center;
+    }
+
+    #btn {
+      display: none;
     }
   }
 
