@@ -79,7 +79,14 @@ const routes = [
       title: '答题页'
     }
   },
-
+  {
+    path: "/score/:id",
+    component: () => import("views/Score"),
+    meta: {
+      auth: 1,
+      title: '成绩'
+    }
+  },
   {
     path: "/admin",
     component: () => import("views/admin/AdminTab"),

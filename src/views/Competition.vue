@@ -25,7 +25,7 @@
       {{questions[cursor].content}}
     </div>
 
-    <div id="options" @click="upload">
+    <div id="options" @click="upload(false)">
       <div
         class="option"
         :class="{active:questions[cursor].answer==='A'}" v-if="questions[cursor].choice_a"
@@ -68,7 +68,7 @@
     </div>
   </div>
 
-  <div id="foot" class="var-elevation--5">
+  <div id="foot" v-if="ready" class="var-elevation--5">
     <div id="foot-text" @click="show=true">答题卡</div>
   </div>
 
@@ -94,7 +94,8 @@
         questions: null,
         cursor: 0,
         show: false,
-        time_limit: null
+        time_limit: null,
+        page: 0
       }
     },
     methods: {
@@ -111,23 +112,32 @@
       submit() {
         if (this.questions.filter(x => !x.answer).length) {
           this.$dialog({
-            message: "还有题目没有做，确认提交？",
+            message: "还有题目未做，确认提交？",
           }).then(res => {
             if (res === "confirm") {
-              this.upload()
+              this.upload(true)
             }
           })
+        }else {
+          this.upload(true)
         }
-        this.upload()
       },
-      upload() {
+      upload(finish) {
         this.$ajax.api.post(
           `competition/${this.$route.params.id}/upload/`,
           {
-            answer: this.questions
+            answer: this.questions,
+            finish: finish
           }
         ).then(res => {
-
+          if(finish) {
+            this.$tip({
+              content: "已提交",
+              type: "success",
+              duration: 1000,
+            })
+            this.$router.replace(`/score/${this.$route.params.id}/`)
+          }
         })
       }
     },
@@ -135,7 +145,39 @@
       this.$ajax.api.get(
         `competition/${this.$route.params.id}/questions/`,
       ).then(res => {
-        if (res.data.msg !== "错误") {
+        if (res.data.code === 800) {
+          this.$tip({
+            content: "比赛还未开始",
+            type: "warning",
+            duration: 1000,
+          })
+          this.$router.replace(`/home/`)
+        } else if (res.data.code === 801) {
+          this.$tip({
+            content: "比赛已结束",
+            type: "warning",
+            duration: 1000,
+          })
+          if (res.data.result.anwsered) {
+            this.$router.replace(`/score/${this.$route.params.id}/`)
+          } else {
+            this.$router.replace(`/home/`)
+          }
+        } else if (res.data.code === 802) {
+          this.$tip({
+            content: "您已超时",
+            type: "warning",
+            duration: 1000,
+          })
+          this.$router.replace(`/score/${this.$route.params.id}/`)
+        } else if (res.data.code === 803) {
+          this.$tip({
+            content: "您已经答过题了",
+            type: "warning",
+            duration: 1000,
+          })
+          this.$router.replace(`/score/${this.$route.params.id}/`)
+        } else if (res.data.msg !== "错误") {
           this.questions = res.data.result.questions
           this.info = res.data.result.info
           this.time_limit = this.info.time_limit * 60 * 1000

@@ -140,7 +140,7 @@
             },
             serialize: column => {
               if (column["answer_num"] === 0) return "无数据"
-              return parseInt(100 * column["answer_num"] / column["correct_answer_num"]) + "%"
+              return parseInt(100 * column["correct_answer_num"] / column["answer_num"]) + "%"
             }
           },
           {
