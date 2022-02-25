@@ -97,6 +97,10 @@ const routes = [
         component: () => import("views/admin/UserEdit"),
       },
       {
+        path: "score",
+        component: () => import("views/admin/Score"),
+      },
+      {
         path: 'question-edit',
         component: () => import("views/admin/QuestionBankEdit"),
       },
