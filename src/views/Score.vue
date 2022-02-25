@@ -17,14 +17,21 @@
 
   <div v-if="ready" id="wrap">
     <div id="icon">
-      <var-icon size="80px" color="#00c48f" name="checkbox-marked-outline"/>
+      <var-icon v-if="valid" size="80px" color="#00c48f" name="checkbox-marked-outline"/>
+      <var-icon v-else size="80px" color="red" name="information-outline"/>
     </div>
-    <div id="score">
-      得分：{{data.score}}/{{data.total}}
+    <div v-if="valid">
+      <div id="score">
+        得分：{{data.score}}/{{data.total}}
+      </div>
+      <div id="time">
+        用时：{{data.time_used}}秒
+      </div>
     </div>
-    <div id="time">
-      用时：{{data.time_used}}秒
+    <div v-else>
+      <div id="invalid">成绩无效</div>
     </div>
+
     <div id="btn">
       <var-button type="success" block @click="this.$router.replace('/home')">返回主页</var-button>
     </div>
@@ -42,6 +49,7 @@
       return {
         data: {},
         ready: false,
+        valid: true
       }
     },
     beforeCreate() {
@@ -57,6 +65,8 @@
             duration: 3000,
           })
           this.$router.push("/home")
+        } else if (res.data.code === 805) {
+          this.valid = false
         }
         this.ready = true
       })
@@ -99,7 +109,7 @@
       font-weight: bolder;
     }
 
-    #score, #time {
+    #score, #time, #invalid {
       line-height: 50px;
       font-size: 30px;
       text-align: center;
@@ -123,7 +133,7 @@
       text-align: center;
     }
 
-    #score, #time {
+    #score, #time, #invalid {
       line-height: 40px;
       font-size: 20px;
       text-align: center;

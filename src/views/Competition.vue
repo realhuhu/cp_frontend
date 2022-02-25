@@ -408,6 +408,7 @@
 
     #content {
       padding: 20px;
+      min-height: 100px;
     }
 
     #options {

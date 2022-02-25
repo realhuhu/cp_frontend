@@ -108,7 +108,7 @@
             <var-icon class="icon" style="float: right" size="20" name="chevron-right"/>
           </div>
           <br>
-          <div class="card-btn">
+          <div class="card-btn" @click="this.$router.push('/exercise')">
             <var-icon class="icon" size="20" name="checkbox-marked-outline"/>
             <span>答题练习</span>
             <var-icon class="icon" style="float: right" size="20" name="chevron-right"/>
