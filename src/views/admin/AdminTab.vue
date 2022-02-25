@@ -17,6 +17,10 @@
       <var-icon class="tab-icon" size="30px" name="account-circle"/>
       用户信息
     </var-tab>
+    <var-tab class="tab" @click="this.$router.replace('/admin/score')">
+      <var-icon class="tab-icon" size="30px" name="file-document-outline"/>
+      成绩管理
+    </var-tab>
     <var-divider description="题库管理"/>
     <var-tab class="tab" @click="this.$router.replace('/admin/question-edit')">
       <var-icon class="tab-icon" size="30px" name="notebook"/>
@@ -86,29 +90,34 @@
             active: 0
           },
           {
+            re: /^\/admin\/score$/,
+            title: "用户管理 > 成绩管理",
+            active: 1
+          },
+          {
             re: /^\/admin\/question-edit$/,
             title: "题库管理 > 题库信息",
-            active: 1
+            active: 2
           },
           {
             re: /^\/admin\/upload-question$/,
             title: "题库管理 > 上传题目",
-            active: 2
+            active: 3
           },
           {
             re: /^\/admin\/competition\/[0-9]*$/,
             title: "竞赛管理 > 竞赛详情",
-            active: 3
+            active: 4
           },
           {
             re: /^\/admin\/competition$/,
             title: "竞赛管理 > 竞赛列表",
-            active: 3
+            active: 4
           },
           {
             re: /^\/admin\/create-competition$/,
             title: "竞赛管理 > 新建竞赛",
-            active: 4
+            active: 5
           }
         ],
         title: ""
