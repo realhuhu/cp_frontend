@@ -175,7 +175,7 @@
             @click="this.$router.push(`/competition/${this.info.id}`)">
             开始答题
           </var-button>
-          <var-button block type="info" disabled v-if="chip_style.type==='warning'">
+          <var-button block type="info" disabled v-if="chip_style.type==='danger'">
             已结束
           </var-button>
         </div>
