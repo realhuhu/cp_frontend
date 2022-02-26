@@ -58,17 +58,17 @@
             个人信息
             <var-icon class="btn-icon-right" size="20" name="chevron-right"/>
           </div>
-          <div class="btn" @click="this.$router.replace('change-password')">
+          <div class="btn" @click="this.$router.replace('/change-password')">
             <var-icon class="btn-icon-left" size="20" name="cog-outline"/>
             修改密码
             <var-icon class="btn-icon-right" size="20" name="chevron-right"/>
           </div>
-          <div class="btn" @click="this.$router.replace('reset-password')">
+          <div class="btn" @click="this.$router.replace('/reset-password')">
             <var-icon class="btn-icon-left" size="20" name="cellphone"/>
             找回密码
             <var-icon class="btn-icon-right" size="20" name="chevron-right"/>
           </div>
-          <div v-if="user.is_superuser" class="btn" @click="this.$router.replace('admin')">
+          <div v-if="user.is_superuser" class="btn" @click="this.$router.replace('/admin')">
             <var-icon class="btn-icon-left" size="20" name="notebook"/>
             管理员页面
             <var-icon class="btn-icon-right" size="20" name="chevron-right"/>

@@ -3,7 +3,7 @@ import ajax from "axios";
 
 let api = ajax.create({
   baseURL: api_url,
-  timeout: 5000,
+  timeout: 20000,
 })
 
 

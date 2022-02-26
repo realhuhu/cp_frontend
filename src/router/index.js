@@ -80,6 +80,14 @@ const routes = [
     }
   },
   {
+    path: "/article/:id",
+    component: () => import("views/Article"),
+    meta: {
+      auth: 1,
+      title: '公告'
+    }
+  },
+  {
     path: "/score/:id",
     component: () => import("views/Score"),
     meta: {
@@ -119,6 +127,14 @@ const routes = [
       {
         path: 'create-competition',
         component: () => import("views/admin/CreateCompetition")
+      },
+      {
+        path: 'notice',
+        component: () => import("views/admin/Notice")
+      },
+      {
+        path: 'link',
+        component: () => import("views/admin/Other")
       }
     ],
     meta: {
@@ -141,7 +157,11 @@ router.beforeEach((to, from, next) => {
           next()
         } else {
           if (route.meta.auth === 1 && !store.state.is_login) {
-            next({path: "/login", query: {next: route.path}})
+            if (route.path.search(":") === -1) {
+              next({path: "/login", query: {next: route.path}})
+            } else {
+              next({path: "/login"})
+            }
           } else if (route.meta.auth === 0 && store.state.is_login) {
             next(to.query.next || "/home")
           } else if (route.meta.auth === 2 && !store.state.is_superuser) {

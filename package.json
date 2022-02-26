@@ -9,6 +9,8 @@
   "dependencies": {
     "@varlet/touch-emulator": "^1.26.2",
     "@varlet/ui": "^1.26.1",
+    "@wangeditor/editor": "^0.15.11",
+    "@wangeditor/editor-for-vue": "^5.1.8-9",
     "axios": "^0.26.0",
     "core-js": "^3.6.5",
     "open-browser-webpack-plugin": "^0.0.5",
@@ -17,7 +19,8 @@
     "vue-cookies": "^1.7.4",
     "vue-picture-cropper": "^0.5.1",
     "vue-router": "^4.0.0-0",
-    "vuex": "^4.0.0-0"
+    "vuex": "^4.0.0-0",
+    "xlsx": "^0.18.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

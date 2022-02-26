@@ -22,14 +22,8 @@
   <div id="wrap" class="clear-fix">
     <div id="left">
       <var-swipe class="var-elevation--1" id="swipe" :autoplay="2000">
-        <var-swipe-item>
-          <img class="swipe-item" src="https://varlet.gitee.io/varlet-ui/cat.jpg">
-        </var-swipe-item>
-        <var-swipe-item>
-          <img class="swipe-item" src="https://varlet.gitee.io/varlet-ui/cat2.jpg">
-        </var-swipe-item>
-        <var-swipe-item>
-          <img class="swipe-item" src="https://varlet.gitee.io/varlet-ui/cat3.jpg">
+        <var-swipe-item v-for="i in swipe">
+          <img class="swipe-item" :src="i.url">
         </var-swipe-item>
       </var-swipe>
       <div class="space"/>
@@ -50,7 +44,7 @@
         <var-tabs-items v-model:active="active">
           <var-tab-item>
             <div class="clear-fix">
-              <div id="search">
+              <div class="search">
                 <var-input
                   :hint="false"
                   :line="false"
@@ -61,7 +55,7 @@
                   @clear="search"
                   clearable>
                   <template #prepend-icon>
-                    <var-icon id="search-btn" name="magnify" @click="search"/>
+                    <var-icon class="search-btn" name="magnify" @click="search"/>
                   </template>
                 </var-input>
               </div>
@@ -88,6 +82,39 @@
           </var-tab-item>
 
           <var-tab-item>
+            <div class="clear-fix">
+              <div class="search">
+                <var-input
+                  :hint="false"
+                  :line="false"
+                  text-color="#333"
+                  placeholder="搜索公告"
+                  v-model="article_value"
+                  @keydown.enter="article_search"
+                  @clear="article_search"
+                  clearable>
+                  <template #prepend-icon>
+                    <var-icon class="search-btn" name="magnify" @click="article_search"/>
+                  </template>
+                </var-input>
+              </div>
+            </div>
+            <var-list
+              :finished="article_finished"
+              v-model:loading="article_loading"
+              @load="article_load">
+              <var-cell :key="article" v-for="article in articles">
+                <div class="article-card" @click="this.$router.push( `/article/${article.id}`)">
+                  <div class="article-title">{{article.title}}</div>
+                  <div class=" clear-fix">
+                    <div class="article-time right ">
+                      {{article.create_time.substring(0,16).replace("T"," ")}}
+                    </div>
+                  </div>
+                  <div class="article-content"> {{article.description}}</div>
+                </div>
+              </var-cell>
+            </var-list>
           </var-tab-item>
         </var-tabs-items>
       </div>
@@ -118,6 +145,14 @@
 
       <div class="space"></div>
 
+      <div id="top">
+        <div style="padding: 10px;text-align: center">置顶</div>
+        <var-divider margin="0"></var-divider>
+        <div class="link" v-for="i in top" @click="open(i.url)">
+          {{i.title}}
+        </div>
+      </div>
+
     </div>
 
     <var-popup style="border-radius: 10px" v-model:show="is_popup">
@@ -140,8 +175,8 @@
             @click="this.$router.push(`/competition/${this.info.id}`)">
             开始答题
           </var-button>
-          <var-button block type="info" v-if="chip_style.type==='danger'">
-            查看排行榜
+          <var-button block type="info" disabled v-if="chip_style.type==='warning'">
+            已结束
           </var-button>
         </div>
       </div>
@@ -155,14 +190,21 @@
     data() {
       return {
         competitions: [],
+        articles: [],
         loading: false,
+        article_loading: false,
         finished: false,
+        article_finished: false,
         next: false,
+        article_next: false,
         active: 0,
         value: "",
+        article_value: "",
         is_popup: false,
         info: null,
-        chip_style: null
+        chip_style: null,
+        swipe: [],
+        top: []
       }
     },
     methods: {
@@ -185,6 +227,34 @@
           }
           this.loading = false
           this.finished = !Boolean(this.next)
+        }).catch(err => {
+          this.$store.commit("initialize")
+          this.$tip({
+            content: err,
+            type: "warning",
+            duration: 1000,
+          })
+        })
+      },
+      article_search() {
+        this.articles = []
+        this.$ajax.api.get(
+          `common/articles/?search=${this.article_value}`,
+        ).then(res => {
+          if (res.data.msg !== "错误") {
+            for (let i of res.data.result.results) {
+              this.articles.push(i)
+            }
+            this.article_next = res.data.result.next
+          } else {
+            this.$tip({
+              content: res.data.msg,
+              type: "warning",
+              duration: 1000,
+            })
+          }
+          this.article_loading = false
+          this.article_finished = !Boolean(this.article_next)
         }).catch(err => {
           this.$store.commit("initialize")
           this.$tip({
@@ -221,6 +291,33 @@
           })
         })
       },
+      article_load() {
+        this.$ajax.api.get(
+          this.article_next || "common/articles/",
+        ).then(res => {
+          if (res.data.msg !== "错误") {
+            for (let i of res.data.result.results) {
+              this.articles.push(i)
+            }
+            this.article_next = res.data.result.next
+          } else {
+            this.$tip({
+              content: res.data.msg,
+              type: "warning",
+              duration: 1000,
+            })
+          }
+          this.article_loading = false
+          this.article_finished = !Boolean(this.article_next)
+        }).catch(err => {
+          this.$store.commit("initialize")
+          this.$tip({
+            content: err,
+            type: "warning",
+            duration: 1000,
+          })
+        })
+      },
       pop(competition) {
         this.is_popup = true
         this.info = competition
@@ -246,6 +343,22 @@
         }
 
       },
+      open(url){
+        window.location.replace(url)
+      }
+    },
+    beforeCreate() {
+      this.$ajax.api.get(
+        "common/swipe/"
+      ).then(res => {
+        this.swipe = res.data.result
+      })
+
+      this.$ajax.api.get(
+        "common/top/"
+      ).then(res => {
+        this.top = res.data.result
+      })
     }
   }
 </script>
@@ -310,6 +423,13 @@
       background-color: white;
     }
 
+    #top {
+      width: 100%;
+      padding:0 0 10px;
+      border-radius: 5px;
+      background-color: white;
+    }
+
     #card-btn-wrap {
       width: 150px;
       margin: 0 auto;
@@ -341,18 +461,30 @@
       margin-bottom: 300px;
     }
 
-    .competition-card {
+    .competition-card, .article-card {
       padding: 20px;
       border-radius: 5px;
       background-color: #f6f6f6;
       cursor: pointer;
     }
 
-    .competition-title {
+    .competition-title, .article-title {
       font-size: 20px;
       font-weight: bolder;
       line-height: 40px;
       color: #333333;
+    }
+
+    .link {
+      margin: 10px;
+      line-height: 20px;
+      text-indent: 10px;
+      cursor: pointer;
+      color: #555;
+    }
+
+    .link:hover {
+      color: #4ebaee;
     }
 
     #popup-wrap {
@@ -421,19 +553,20 @@
       background-color: #fafafa;
     }
 
-    .competition-card {
+    .competition-card, .article-card {
       padding: 10px;
       border-radius: 5px;
       background-color: #f6f6f6;
       cursor: pointer;
     }
 
-    .competition-title {
+    .competition-title, .article-title {
       font-size: 20px;
       font-weight: bolder;
       line-height: 30px;
       color: #333333;
     }
+
 
     #popup-wrap {
       width: 90vw;
@@ -442,7 +575,7 @@
     }
   }
 
-  #search {
+  .search {
     float: right;
     height: 30px;
     margin: 10px 12px 0;
@@ -452,7 +585,7 @@
     border-radius: 10px;
   }
 
-  #search-btn {
+  .search-btn {
     padding: 3px;
     margin: 2px;
     border-radius: 5px;

@@ -39,6 +39,15 @@
       <var-icon class="tab-icon" size="30px" name="plus"/>
       新建竞赛
     </var-tab>
+    <var-divider description="其它"/>
+    <var-tab class="tab" @click="this.$router.replace('/admin/notice')">
+      <var-icon class="tab-icon" size="30px" name="content-copy"/>
+      公告管理
+    </var-tab>
+    <var-tab class="tab" @click="this.$router.replace('/admin/link')">
+      <var-icon class="tab-icon" size="30px" name="plus"/>
+      链接设置
+    </var-tab>
     <div id="foot">
       <div id="bottom">
         <img id="logo" src="~assets/img/logo.png" alt="" style="color: green;" @click="this.$router.replace('/home')">
@@ -118,6 +127,16 @@
             re: /^\/admin\/create-competition$/,
             title: "竞赛管理 > 新建竞赛",
             active: 5
+          },
+          {
+            re: /^\/admin\/notice$/,
+            title: "其它 > 公告管理",
+            active: 6
+          },
+          {
+            re: /^\/admin\/link$/,
+            title: "其它 > 链接管理",
+            active: 7
           }
         ],
         title: ""
@@ -196,7 +215,7 @@
   }
 
   #foot {
-    height: 50vh;
+    height: 40vh;
   }
 
   #bottom {
