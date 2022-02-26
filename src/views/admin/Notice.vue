@@ -32,7 +32,7 @@
           :mode="mode"
         />
         <Editor
-          style="height: 500px; overflow-y: hidden;"
+          style="height:40vh; overflow-y: hidden;"
           editorId="editor"
           :defaultConfig="editorConfig"
           :mode="mode"
@@ -426,7 +426,7 @@
   #wrap {
     position: fixed;
     left: 15vw;
-    top: 50px;
+    top: 10vh;
     z-index: 1020;
     width: 70vw;
     background-color: white;
@@ -434,15 +434,15 @@
   }
 
   .poster {
-    padding: 50px;
+    padding: 20px;
   }
 
   #title {
-    padding: 10px;
+    padding: 5px;
   }
 
   #description {
-    padding: 10px;
+    padding: 5px;
   }
 
   .hide {
