@@ -22,7 +22,7 @@
   <div id="wrap" class="clear-fix">
     <div id="left">
       <var-swipe class="var-elevation--1" id="swipe" :autoplay="2000">
-        <var-swipe-item v-for="i in swipe">
+        <var-swipe-item v-for="i in this.$store.state.swipe">
           <img class="swipe-item" :src="i.url">
         </var-swipe-item>
       </var-swipe>
@@ -148,7 +148,7 @@
       <div id="top">
         <div style="padding: 10px;text-align: center">置顶</div>
         <var-divider margin="0"></var-divider>
-        <div class="link" v-for="i in top" @click="open(i.url)">
+        <div class="link" v-for="i in this.$store.state.top" @click="open(i.url)">
           {{i.title}}
         </div>
       </div>
@@ -203,8 +203,6 @@
         is_popup: false,
         info: null,
         chip_style: null,
-        swipe: [],
-        top: []
       }
     },
     methods: {
@@ -213,7 +211,7 @@
         this.$ajax.api.get(
           `competition/?search=${this.value}`,
         ).then(res => {
-          if (res.data.msg !== "错误") {
+          if (res.data.code === 100) {
             for (let i of res.data.result.results) {
               this.competitions.push(i)
             }
@@ -241,7 +239,7 @@
         this.$ajax.api.get(
           `common/articles/?search=${this.article_value}`,
         ).then(res => {
-          if (res.data.msg !== "错误") {
+          if (res.data.code === 100) {
             for (let i of res.data.result.results) {
               this.articles.push(i)
             }
@@ -268,7 +266,7 @@
         this.$ajax.api.get(
           this.next || "competition/",
         ).then(res => {
-          if (res.data.msg !== "错误") {
+          if (res.data.code === 100) {
             for (let i of res.data.result.results) {
               this.competitions.push(i)
             }
@@ -295,7 +293,7 @@
         this.$ajax.api.get(
           this.article_next || "common/articles/",
         ).then(res => {
-          if (res.data.msg !== "错误") {
+          if (res.data.code === 100) {
             for (let i of res.data.result.results) {
               this.articles.push(i)
             }
@@ -343,23 +341,10 @@
         }
 
       },
-      open(url){
-        window.location.replace(url)
+      open(url) {
+        window.open(url)
       }
     },
-    beforeCreate() {
-      this.$ajax.api.get(
-        "common/swipe/"
-      ).then(res => {
-        this.swipe = res.data.result
-      })
-
-      this.$ajax.api.get(
-        "common/top/"
-      ).then(res => {
-        this.top = res.data.result
-      })
-    }
   }
 </script>
 
@@ -425,9 +410,10 @@
 
     #top {
       width: 100%;
-      padding:0 0 10px;
+      padding: 0 0 10px;
       border-radius: 5px;
       background-color: white;
+      min-height: 100px;
     }
 
     #card-btn-wrap {
@@ -459,6 +445,7 @@
       background-color: white;
       border-radius: 10px;
       margin-bottom: 300px;
+      padding-bottom: 100px;
     }
 
     .competition-card, .article-card {

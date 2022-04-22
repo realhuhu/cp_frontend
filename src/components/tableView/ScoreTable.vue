@@ -116,12 +116,12 @@
         this.$ajax.api.get(
           "admin/score/?" + query,
         ).then(res => {
-          if (res.data.msg !== "错误") {
+          if (res.data.code === 100) {
             this.data = res.data.result['results']
             this.total = res.data.result['count']
           } else {
             this.$tip({
-              content: res.data.result,
+              content: res.data.msg,
               type: "warning",
               duration: 3000,
             })
@@ -141,7 +141,7 @@
           `admin/score/${id}/`,
           data
         ).then(res => {
-          if (res.data.msg !== "错误") {
+          if (res.data.code === 100) {
             this.$tip({
               content: "已更新",
               type: "success",
@@ -149,7 +149,7 @@
             })
           } else {
             this.$tip({
-              content: res.data.result,
+              content: res.data.msg,
               type: "warning",
               duration: 3000,
             })
@@ -169,13 +169,13 @@
       this.$ajax.api.get(
         "admin/score/",
       ).then(res => {
-        if (res.data.msg !== "错误") {
+        if (res.data.code === 100) {
           this.data = res.data.result['results']
           this.total = res.data.result['count']
           this.ready = true
         } else {
           this.$tip({
-            content: res.data.result,
+            content: res.data.msg,
             type: "warning",
             duration: 3000,
           })

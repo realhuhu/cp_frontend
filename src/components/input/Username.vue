@@ -3,7 +3,7 @@
     <var-input
       clearable
       :placeholder="placeholder || '用户名'"
-      :rules="this.$settings.validators.username"
+      :rules="this.$settings.validators.card"
       v-model="username"
       @change="$emit('update:username',username)"
     />

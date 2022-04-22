@@ -83,7 +83,6 @@ const routes = [
     path: "/article/:id",
     component: () => import("views/Article"),
     meta: {
-      auth: 1,
       title: '公告'
     }
   },
@@ -103,6 +102,10 @@ const routes = [
       {
         path: "user",
         component: () => import("views/admin/UserEdit"),
+      },
+      {
+        path: "upload-user",
+        component: () => import("views/admin/UploadUser"),
       },
       {
         path: "score",
@@ -150,30 +153,54 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  to.matched.some(route => {
-    let inter = setInterval(() => {
-      if (store.state.is_init) {
-        if (route.meta.auth === undefined) {
+  if (to.meta.title) {
+    document.title = to.meta.title
+  }
+
+  let login = store.state.login
+  let login_init = store.state.is_login_init
+  if (!login_init) {
+    if (to.meta.auth === 0) {
+      if (!login) {
+        next()
+      } else {
+        login.then(() => {
+          next(to.query.next || "/home")
+        }).catch(() => {
           next()
-        } else {
-          if (route.meta.auth === 1 && !store.state.is_login) {
-            if (route.path.search(":") === -1) {
-              next({path: "/login", query: {next: route.path}})
-            } else {
-              next({path: "/login"})
-            }
-          } else if (route.meta.auth === 0 && store.state.is_login) {
-            next(to.query.next || "/home")
-          } else if (route.meta.auth === 2 && !store.state.is_superuser) {
-            next({path: "/home"})
-          } else {
-            next()
-          }
-        }
-        clearInterval(inter)
+        })
       }
-    }, 100)
-  })
+    } else if (to.meta.auth === 1) {
+      if (!login) {
+        next({path: "/login", query: {next: to.path}})
+      } else {
+        login.then(() => {
+          next()
+        }).catch(() => {
+          next({path: "/login", query: {next: to.path}})
+        })
+      }
+    } else {
+      next()
+    }
+  } else {
+    let is_login = store.state.is_login
+    if (to.meta.auth === 0) {
+      if (!is_login) {
+        next()
+      } else {
+        next(to.query.next || "/home")
+      }
+    } else if (to.meta.auth === 1) {
+      if (!is_login) {
+        next({path: "/login", query: {next: to.path}})
+      } else {
+        next()
+      }
+    } else {
+      next()
+    }
+  }
 })
 
 router.return = function (path) {

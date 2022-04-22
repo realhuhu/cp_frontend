@@ -6,8 +6,17 @@
     :data="swipe_data"
     :total="swipe_total"
     @search="swipe_search"
-    @update="swipe_update">
+    @update="swipe_update"
+    @extra="rem_swipe">
+    <template #extend>
+      <div style="padding: 10px 30px">
+        <var-button block type="danger">删除</var-button>
+      </div>
+    </template>
   </dynamic-table>
+  <div class="clear-fix">
+    <var-button type="primary" @click="swipe_pop=true" style="float: right;margin: 20px">添加轮播图</var-button>
+  </div>
   <br>
   <dynamic-table
     title="置顶链接"
@@ -18,16 +27,28 @@
     :extend="top_extend"
     @update="top_update"
     @search="top_search"
-    @extra="rem">
+    @extra="rem_top">
     <template #extend>
       <div style="padding: 10px 30px">
         <var-button block type="danger">删除</var-button>
       </div>
     </template>
   </dynamic-table>
-  <var-button type="primary" @click="pop=true" style="float: right;margin: 20px">添加置顶</var-button>
+  <var-button type="primary" @click="top_pop=true" style="float: right;margin: 20px">添加置顶</var-button>
 
-  <var-popup v-model:show="pop" style="    border-radius: 20px;">
+  <var-popup v-model:show="swipe_pop" style="border-radius: 20px;">
+    <div class="pop">
+      <div style="text-align: center">添加轮播图</div>
+      <div class="btn">
+        <var-input placeholder="链接" v-model="url"/>
+      </div>
+      <div style="padding: 30px">
+        <var-button type="primary" @click="submit_swipe" block>确定</var-button>
+      </div>
+    </div>
+  </var-popup>
+
+  <var-popup v-model:show="top_pop" style="border-radius: 20px;">
     <div class="pop">
       <div style="text-align: center">添加置顶</div>
       <div class="btn">
@@ -37,10 +58,11 @@
         <var-input placeholder="链接" v-model="url"/>
       </div>
       <div style="padding: 30px">
-        <var-button type="primary" @click="submit" block>确定</var-button>
+        <var-button type="primary" @click="submit_top" block>确定</var-button>
       </div>
     </div>
   </var-popup>
+
 
 </template>
 
@@ -119,7 +141,8 @@
           }
         },
 
-        pop: false,
+        top_pop: false,
+        swipe_pop: false,
         title: "",
         url: "",
       }
@@ -130,7 +153,7 @@
           `admin/swipe/${id}/`,
           data
         ).then(res => {
-          if (res.data.msg !== "错误") {
+          if (res.data.code === 100) {
             this.$tip({
               content: "已更新",
               type: "success",
@@ -138,7 +161,7 @@
             })
           } else {
             this.$tip({
-              content: res.data.result,
+              content: res.data.msg,
               type: "warning",
               duration: 3000,
             })
@@ -158,12 +181,12 @@
         this.$ajax.api.get(
           "admin/swipe/?" + query,
         ).then(res => {
-          if (res.data.msg !== "错误") {
+          if (res.data.code === 100) {
             this.swipe_data = res.data.result['results']
             this.swipe_total = res.data.result['count']
           } else {
             this.$tip({
-              content: res.data.result,
+              content: res.data.msg,
               type: "warning",
               duration: 3000,
             })
@@ -184,7 +207,7 @@
           `admin/top/${id}/`,
           data
         ).then(res => {
-          if (res.data.msg !== "错误") {
+          if (res.data.code === 100) {
             this.$tip({
               content: "已更新",
               type: "success",
@@ -192,7 +215,7 @@
             })
           } else {
             this.$tip({
-              content: res.data.result,
+              content: res.data.msg,
               type: "warning",
               duration: 3000,
             })
@@ -212,12 +235,12 @@
         this.$ajax.api.get(
           "admin/top/?" + query,
         ).then(res => {
-          if (res.data.msg !== "错误") {
+          if (res.data.code === 100) {
             this.top_data = res.data.result['results']
             this.top_total = res.data.result['count']
           } else {
             this.$tip({
-              content: res.data.result,
+              content: res.data.msg,
               type: "warning",
               duration: 3000,
             })
@@ -233,11 +256,11 @@
         })
       },
 
-      rem(column) {
+      rem_top(column) {
         this.$ajax.api.delete(
           `admin/top/${column.id}/`,
         ).then(res => {
-          if (res.data.msg !== "错误") {
+          if (res.data.code === 100) {
             this.$tip({
               content: "已删除",
               type: "success",
@@ -245,7 +268,7 @@
             })
           } else {
             this.$tip({
-              content: res.data.result,
+              content: res.data.msg,
               type: "warning",
               duration: 3000,
             })
@@ -261,7 +284,62 @@
           this.ready = true
         })
       },
-      submit() {
+      rem_swipe(column) {
+        this.$ajax.api.delete(
+          `admin/swipe/${column.id}/`,
+        ).then(res => {
+          if (res.data.code === 100) {
+            this.$tip({
+              content: "已删除",
+              type: "success",
+              duration: 3000,
+            })
+          } else {
+            this.$tip({
+              content: res.data.msg,
+              type: "warning",
+              duration: 3000,
+            })
+          }
+          this.top_search()
+          this.ready = true
+        }).catch(err => {
+          this.$tip({
+            content: err,
+            type: "error",
+            duration: 3000,
+          })
+          this.ready = true
+        })
+      },
+      submit_swipe() {
+        this.$ajax.api.post(
+          "admin/swipe/",
+          {
+            url: this.url,
+          }
+        ).then(res => {
+          if (res.data.code === 100) {
+            this.title = ""
+            this.url = ""
+            this.swipe_search()
+          } else {
+            this.$tip({
+              content: res.data.msg,
+              type: "warning",
+              duration: 3000,
+            })
+          }
+        }).catch(err => {
+          this.$tip({
+            content: err,
+            type: "error",
+            duration: 3000,
+          })
+          this.top_ready = true
+        })
+      },
+      submit_top() {
         this.$ajax.api.post(
           "admin/top/",
           {
@@ -269,13 +347,13 @@
             url: this.url,
           }
         ).then(res => {
-          if (res.data.msg !== "错误") {
+          if (res.data.code === 100) {
             this.title = ""
             this.url = ""
             this.top_search()
           } else {
             this.$tip({
-              content: res.data.result,
+              content: res.data.msg,
               type: "warning",
               duration: 3000,
             })
@@ -294,13 +372,13 @@
       this.$ajax.api.get(
         "admin/swipe/",
       ).then(res => {
-        if (res.data.msg !== "错误") {
+        if (res.data.code === 100) {
           this.swipe_data = res.data.result['results']
           this.swipe_total = res.data.result['count']
           this.swipe_ready = true
         } else {
           this.$tip({
-            content: res.data.result,
+            content: res.data.msg,
             type: "warning",
             duration: 3000,
           })
@@ -315,13 +393,13 @@
       this.$ajax.api.get(
         "admin/top/",
       ).then(res => {
-        if (res.data.msg !== "错误") {
+        if (res.data.code === 100) {
           this.top_data = res.data.result['results']
           this.top_total = res.data.result['count']
           this.top_ready = true
         } else {
           this.$tip({
-            content: res.data.result,
+            content: res.data.msg,
             type: "warning",
             duration: 3000,
           })

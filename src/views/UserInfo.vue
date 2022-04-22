@@ -32,18 +32,24 @@
               </var-row>
             </div>
 
-            <div class="items edit" @click="edit_username">
+            <div class="items">
               <var-row>
                 <var-col span="11">
-                  <div class="item-left">用户名</div>
+                  <div class="item-left">一卡通号</div>
+                </var-col>
+                <var-col span="11">
+                  <div class="item-center">{{user.card}}</div>
+                </var-col>
+              </var-row>
+            </div>
+
+            <div class="items">
+              <var-row>
+                <var-col span="11">
+                  <div class="item-left">姓名</div>
                 </var-col>
                 <var-col span="11">
                   <div class="item-center">{{user.username}}</div>
-                </var-col>
-                <var-col span="2">
-                  <div class="item-right">
-                    <var-icon size="30" style="margin: 10px 0" name="chevron-right"/>
-                  </div>
                 </var-col>
               </var-row>
             </div>
@@ -122,7 +128,7 @@
               />
             </var-col>
             <var-col :span="18">
-              <div id="username" @click="edit_username">{{user.username}}</div>
+              <div id="username">{{user.username}}</div>
               <div id="id" v-if="this.$store.state.is_login">
                 <var-chip size="mini">ID:{{user.id}}</var-chip>
               </div>
@@ -135,15 +141,23 @@
     <div id="pe-2">
       <var-card class="card" id="card-2">
         <template #extra>
+          <div class="pe-item">
+            <span>一卡通号</span>
+            <span style="float: right;font-weight: bold">{{user.card}}</span>
+          </div>
+          <var-divider/>
+
           <div class="pe-item" @click="edit_phone">
             <span>电话号码</span>
             <span style="float: right">{{user.phone}}</span>
           </div>
           <var-divider/>
+
           <div class="pe-item" @click="this.$router.push('change-password')">
             <span>修改密码</span>
           </div>
           <var-divider/>
+
           <div class="pe-item" @click="this.$router.push('reset-password')">
             <span>重置密码</span>
           </div>
@@ -158,24 +172,18 @@
     <var-popup style="border-radius: 20px" v-model:show="is_pou_up">
       <div id="pop-up">
         <div id="pop-title">
-          {{["修改用户名","绑定手机","解除绑定"][type]}}
+          {{["绑定手机","解除绑定"][type]}}
         </div>
 
 
         <div id="pop-content">
-          <div v-if="type===0">
-            <username :placeholder="'新用户名'" v-model:username="username"/>
+          <div v-if="is_phone">
+            <phone v-model:phone="this.user.phone" :disabled="true"/>
+            <msg-code v-model:code="code" :method="is_phone?'unbind_phone':'bind_phone'" :phone="this.user.phone"/>
           </div>
-
-          <div v-if="type===1 ||type===2">
-            <div v-if="is_phone">
-              <phone v-model:phone="this.user.phone" :disabled="true"/>
-              <msg-code v-model:code="code" :method="is_phone?'unbind_phone':'bind_phone'" :phone="this.user.phone"/>
-            </div>
-            <div v-else>
-              <phone v-model:phone="phone"/>
-              <msg-code v-model:code="code" :method="is_phone?'unbind_phone':'bind_phone'" :phone="phone"/>
-            </div>
+          <div v-else>
+            <phone v-model:phone="phone"/>
+            <msg-code v-model:code="code" :method="is_phone?'unbind_phone':'bind_phone'" :phone="phone"/>
           </div>
         </div>
 
@@ -202,7 +210,7 @@
     data() {
       return {
         user: this.$store.state.user,
-        "username": "",
+        username: "",
         phone: "",
         code: "",
         is_pou_up: false,
@@ -219,30 +227,18 @@
       }
     },
     methods: {
-      edit_username() {
-        this.is_pou_up = true
-        this.type = 0
-      },
       edit_phone() {
         this.is_pou_up = true
         if (this.user.phone === "未绑定") {
-          this.type = 1
+          this.type = 0
         } else {
-          this.type = 2
+          this.type = 1
         }
       },
       confirm() {
         let url, data
         switch (this.type) {
           case 0:
-            if (!this.re_pattens.username.test(this.username)) return
-
-            url = "/user/user_info/"
-            data = {
-              username: this.username
-            }
-            break
-          case 1:
             if (!this.re_pattens.phone.test(this.phone)) return
             if (!this.re_pattens.code.test(this.code)) return
 
@@ -252,7 +248,7 @@
               code: this.code
             }
             break
-          case 2:
+          case 1:
             if (!this.re_pattens.code.test(this.code)) return
 
             url = "/user/unbind_phone/"
@@ -271,26 +267,6 @@
         switch (this.type) {
           case 0:
             request.then(res => {
-              if (res.data.code === 108) {
-                this.$tip({
-                  content: "用户信息修改成功",
-                  type: "success",
-                  duration: 1000,
-                })
-                this.is_pou_up = false
-                this.$cookies.set("token", res.data.result.token)
-                this.$store.commit("login", res.data.result["user"])
-              } else {
-                this.$tip({
-                  content: res.data.msg,
-                  type: "warning",
-                  duration: 1000,
-                })
-              }
-            })
-            break
-          case 1:
-            request.then(res => {
               if (res.data.code === 105) {
                 this.$tip({
                   content: "绑定成功",
@@ -308,7 +284,7 @@
               }
             })
             break
-          case 2:
+          case 1:
             request.then(res => {
               if (res.data.code === 106) {
                 this.$tip({
@@ -419,12 +395,22 @@
       margin-top: 20px;
     }
 
-    #pe, #pe-2, #pe-3,#app-bar {
+    #pe, #pe-2, #pe-3, #app-bar {
       display: none;
     }
   }
 
   @media screen and (max-width: 840px) {
+    #banner {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #F0F1F5;
+      z-index: -1;
+    }
+
     #wrap {
       width: 90vw;
       margin: 70px 5vw;
@@ -453,7 +439,7 @@
       padding: 20px;
     }
 
-    #title, #banner, #divider, #pc {
+    #title, #divider, #pc {
       display: none;
     }
 

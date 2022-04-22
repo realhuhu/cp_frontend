@@ -17,12 +17,12 @@
     <div id="pc-title">
       {{info.title}}
     </div>
-    <div v-if="info.time_limit" id="timer" @end="upload(true)">
-      <var-countdown :time="time_limit" format="HH 时 mm 分 ss 秒"/>
+    <div v-if="info.time_limit" id="timer">
+      <var-countdown :time="time_limit" format="HH 时 mm 分 ss 秒" @end="upload(true)"/>
       <var-divider margin="0"/>
     </div>
 
-    <div id="progress">{{cursor+1}}/{{info.questions}}</div>
+    <div id="progress">{{cursor+1}}/{{info.total_num}}</div>
 
     <div id="content">
       {{questions[cursor].content}}
@@ -150,13 +150,21 @@
             finish: finish
           }
         ).then(res => {
-          if (finish) {
+          if (res.data.code === 122) {
+            if (finish) {
+              this.$tip({
+                content: "已提交",
+                type: "success",
+                duration: 1000,
+              })
+              this.$router.replace(`/score/${this.$route.params.id}/`)
+            }
+          } else {
             this.$tip({
-              content: "已提交",
-              type: "success",
+              content: res.data.msg,
+              type: "warning",
               duration: 1000,
             })
-            this.$router.replace(`/score/${this.$route.params.id}/`)
           }
         })
       }
@@ -197,7 +205,7 @@
             duration: 3000,
           })
           this.$router.replace(`/score/${this.$route.params.id}/`)
-        } else if (res.data.msg !== "错误") {
+        } else if (res.data.code === 121) {
           this.questions = res.data.result.questions
           this.info = res.data.result.info
           this.time_limit = this.info.time_limit * 60 * 1000
@@ -209,7 +217,7 @@
           this.ready = true
         } else {
           this.$tip({
-            content: res.data.result,
+            content: res.data.msg,
             type: "warning",
             duration: 3000,
           })
@@ -258,9 +266,9 @@
 
     #wrap {
       background-color: white;
-      position: fixed;
+      position: relative;
       left: 2%;
-      top: 80px;
+      top: 2vh;
       width: calc(95% - 400px);
       border-radius: 20px;
     }
@@ -292,11 +300,10 @@
 
     .option {
       margin: 10px 30px;
-      height: 50px;
       border-radius: 5px;
       border: 1px solid #ddd;
-      line-height: 50px;
-      text-indent: 20px;
+      line-height: 25px;
+      padding: 20px;
     }
 
     #crease {

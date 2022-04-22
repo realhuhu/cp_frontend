@@ -199,6 +199,7 @@
 </template>
 <script>
   export default {
+    name: "UploadQuestion",
     data() {
       return {
         question: {
@@ -251,35 +252,36 @@
     },
     methods: {
       upload() {
-        if (Object.values(this.question).filter(x => x === "").length) return
+        // if (Object.values(this.question).filter(x => x === "").length) return
         let url = "admin/question-bank/"
         this.$ajax.api.post(
           url,
           this.question
         ).then(res => {
-          if (res.data.msg !== "错误") {
+          if (res.data.code === 100) {
             this.$tip({
               content: "上传成功",
               type: "success",
               duration: 1000,
             })
+            this.question = {
+              content: "",
+              choice_a: "",
+              choice_b: "",
+              choice_c: "",
+              choice_d: "",
+              answer: "",
+              category: "",
+              difficulty: "",
+            }
           } else {
             this.$tip({
-              content: res.data.result,
+              content: res.data.msg,
               type: "warning",
               duration: 3000,
             })
           }
-          this.question = {
-            content: "",
-            choice_a: "",
-            choice_b: "",
-            choice_c: "",
-            choice_d: "",
-            answer: "",
-            category: "",
-            difficulty: "",
-          }
+
         }).catch(err => {
           this.$tip({
             content: err,
@@ -310,7 +312,7 @@
           headers: {'content-type': 'application/json'},
           data: questions
         }).then(res => {
-          if (res.data.msg !== "错误") {
+          if (res.data.code === 100) {
             this.$tip({
               content: "上传成功",
               type: "success",
@@ -318,7 +320,7 @@
             })
           } else {
             this.$tip({
-              content: res.data.result,
+              content: res.data.msg,
               type: "warning",
               duration: 3000,
             })

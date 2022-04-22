@@ -17,44 +17,35 @@
 
   <div id="wrap">
     <var-divider>
-      <div id="title">{{is_to_login? "登录":"注册"}}</div>
+      <div id="title">登录</div>
     </var-divider>
 
     <var-card class="card" id="card">
       <template #extra>
         <div v-if="!is_use_phone">
-          <username :placeholder="is_to_login? '用户名/手机号':'用户名'" v-model:username="username" @keyup.enter="login"/>
+          <username placeholder="一卡通号" v-model:username="card" @keyup.enter="login"/>
           <password v-model:password="password" @keyup.enter="login"/>
         </div>
 
         <div v-else>
-          <phone v-model:phone="username" @keyup.enter="login"/>
-          <msg-code v-model:code="password" :method="is_to_login?'login':'register'" :phone="username" @keyup.enter="login"/>
+          <phone v-model:phone="card" @keyup.enter="login"/>
+          <msg-code v-model:code="password" method="login" :phone="card" @keyup.enter="login"/>
         </div>
 
-        <div v-if="!is_use_phone && !is_to_login">
-          <password placeholder="确认密码" v-model:password="confirm_password" :confirm="password"/>
-        </div>
 
         <div id="login-btn">
-          <var-button block type="success" @click="login">{{is_to_login? "登录账号":"注册账号"}}</var-button>
+          <var-button block type="success" @click="login">登录账号</var-button>
         </div>
 
 
         <var-button style="width: 50%" text type="primary" @click="phone_toggle">
-          {{is_use_phone? is_to_login?"密码登录":"用户名密码注册":is_to_login?"短信验证码登录":"手机号注册"}}
+          {{is_use_phone? "密码登录":"短信验证码登录"}}
         </var-button>
         <var-button style="width: 50%;" text type="primary" @click="resetPassword">
           忘记密码?
         </var-button>
       </template>
     </var-card>
-
-    <div id="register">
-      <var-chip block plain color="#333" text-color="#254b8f" @click="login_toggle">
-        {{is_to_login?"没有账号？注册一个！":"已有账号？快去登录！"}}
-      </var-chip>
-    </div>
 
   </div>
 </template>
@@ -75,66 +66,38 @@
     },
     data() {
       return {
-        username: "",
+        card: "",
         password: "",
-        confirm_password: "",
         is_use_phone: false,
-        is_to_login: true,
         re_pattens: this.$settings.re_pattens
       }
     },
     methods: {
       login() {
-
         let url, data
 
-
-        if (this.is_use_phone && this.is_to_login) {
-          if (!this.re_pattens.phone.test(this.username)) return
+        if (this.is_use_phone) {
+          if (!this.re_pattens.phone.test(this.card)) return
           if (!this.re_pattens.code.test(this.password)) return
-          url = "user/login/"
-          data = {
-            username: this.username,
-            password: this.password
-          }
-
-        } else if (this.is_use_phone && !this.is_to_login) {
-          if (!this.re_pattens.phone.test(this.username)) return
-          if (!this.re_pattens.code.test(this.password)) return
-          url = "user/register/"
-          data = {
-            phone: this.username,
-            code: this.password
-          }
-
-        } else if (!this.is_use_phone && this.is_to_login) {
-          if (!this.re_pattens.username.test(this.username)) return
+        } else if (!this.is_use_phone) {
+          if (!this.re_pattens.card.test(this.card)) return
           if (!this.re_pattens.password.test(this.password)) return
-          url = "user/login/"
-          data = {
-            username: this.username,
-            password: this.password
-          }
+        }
 
-        } else {
-          if (!this.re_pattens.username.test(this.username)) return
-          if (!this.re_pattens.password.test(this.password)) return
-          if (this.password !== this.confirm_password) return
-          url = "user/register/"
-          data = {
-            username: this.username,
-            password: this.password,
-            confirm_password: this.confirm_password
-          }
+        url = "user/login/"
+        data = {
+          card: this.card,
+          password: this.password
         }
 
         this.$ajax.api.post(
           url,
           data
         ).then(res => {
-          if (res.data.code === 103 && this.is_to_login || res.data.code === 102 && !this.is_to_login) {
+          if (res.data.code === 103) {
             this.$cookies.set("token", res.data.result.token)
             this.$store.commit("login", res.data.result["user"])
+            console.log(this.$route.query.next);
             this.$router.replace(this.$route.query.next || "/home")
           } else {
             this.$tip({
@@ -158,14 +121,9 @@
         this.clear()
         this.is_use_phone = !this.is_use_phone
       },
-      login_toggle() {
-        this.clear()
-        this.is_to_login = !this.is_to_login
-      },
       clear() {
-        this.username = ""
+        this.card = ""
         this.password = ""
-        this.confirm_password = ""
       }
     }
   }

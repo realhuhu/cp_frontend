@@ -1,6 +1,6 @@
 <template>
   <pc-nav-bar v-if="!is_admin"/>
-  <pe-tab-bar v-if="!is_admin&&is_show" :active="active"/>
+  <pe-tab-bar v-if="!is_admin" :active="active"/>
 
   <div v-if="!is_admin" id="content">
     <router-view></router-view>
@@ -40,21 +40,51 @@
     },
     beforeCreate() {
       let token = this.$cookies.get("token")
-      if (!token) {
-        this.$store.commit("initialize")
-      } else {
-        this.$ajax.api.get(
-          "user/user_info/",
+      if (token) {
+        let login = this.$ajax.api.get(
+          "user/user_info/"
         ).then(res => {
           if (res.data.code === 107) {
             this.$store.commit("login", res.data.result.user)
+            return new Promise(resolve => {
+              resolve()
+            })
+          } else {
+            this.$tip({
+              content: res.data.msg,
+              type: "warning",
+              duration: 2000,
+            })
+            return new Promise((resolve, reject) => {
+              reject(res.data.msg)
+            })
           }
-          this.$store.commit("initialize")
         }).catch(err => {
-          this.$store.commit("initialize")
-          console.log(err)
+          this.$tip({
+            content: err,
+            type: "error",
+            duration: 2000,
+          })
+          return new Promise((resolve, reject) => {
+            reject(err)
+          })
         })
+        this.$store.commit("initialize", login)
+      } else {
+        this.$store.commit("initialize", null)
       }
+
+      this.$ajax.api.get(
+        "common/swipe/"
+      ).then(res => {
+        this.$store.commit("swipe", res.data.result)
+      })
+
+      this.$ajax.api.get(
+        "common/top/"
+      ).then(res => {
+        this.$store.commit("top", res.data.result)
+      })
     },
   }
 </script>

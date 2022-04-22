@@ -117,7 +117,6 @@
               ]
             },
             "|",
-            "emotion",
             "insertLink",
             {
               "key": "group-image",
@@ -287,7 +286,7 @@
             data
           }
         ).then(res => {
-          if (res.data.msg !== "错误") {
+          if (res.data.code === 100) {
             this.$tip({
               content: "上传成功",
               type: "success",
@@ -295,7 +294,7 @@
             })
           } else {
             this.$tip({
-              content: res.data.result,
+              content: res.data.msg,
               type: "warning",
               duration: 3000,
             })
@@ -316,12 +315,12 @@
         this.$ajax.api.get(
           "admin/article/?" + query,
         ).then(res => {
-          if (res.data.msg !== "错误") {
+          if (res.data.code === 100) {
             this.data = res.data.result['results']
             this.total = res.data.result['count']
           } else {
             this.$tip({
-              content: res.data.result,
+              content: res.data.msg,
               type: "warning",
               duration: 3000,
             })
@@ -341,15 +340,14 @@
           `admin/article/${id}/`,
           data
         ).then(res => {
-          if (res.data.msg !== "错误") {
+          if (res.data.msg === 100) {
             this.$tip({
               content: "已更新",
-              type: "success",
               duration: 3000,
             })
           } else {
             this.$tip({
-              content: res.data.result,
+              content: res.data.msg,
               type: "warning",
               duration: 3000,
             })
@@ -394,13 +392,13 @@
       this.$ajax.api.get(
         "admin/article/",
       ).then(res => {
-        if (res.data.msg !== "错误") {
+        if (res.data.code === 100) {
           this.data = res.data.result['results']
           this.total = res.data.result['count']
           this.ready = true
         } else {
           this.$tip({
-            content: res.data.result,
+            content: res.data.msg,
             type: "warning",
             duration: 3000,
           })

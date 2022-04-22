@@ -1,7 +1,6 @@
 <template>
   <div id="background"/>
 
-
   <var-app-bar
     id="app-bar"
     class="var-elevation--1"
@@ -25,7 +24,7 @@
     >
       <template #extra>
         <var-divider margin="0"/>
-        <div id="content" v-html="article.content"/>
+        <div id="content" class="container" v-html="article.content"/>
         <div id="btn" class="right">
           <var-button type="primary" @click="this.$router.return('/home')">返回</var-button>
         </div>
@@ -102,6 +101,16 @@
   }
 
   @media screen and (max-width: 840px) {
+    #background {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #F0F1F5;
+      z-index: -1;
+    }
+
     #app-bar {
       position: fixed;
       width: 100%;
@@ -111,7 +120,7 @@
     }
 
     #wrap {
-      margin: 54px 10px;
+      margin: 64px 10px;
     }
 
     #btn {
@@ -122,6 +131,4 @@
       margin: 10px 10px 60px;
     }
   }
-
-
-</style>
+  </style>

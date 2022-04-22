@@ -10,15 +10,6 @@
       <div id="name" @click="to_home">
         校史知识竞赛
       </div>
-
-
-      <div v-if="this.$store.state.is_login" id="message">
-        <var-badge type="danger" position="right-top" style="line-height: 16px" :value="0" :hidden="true">
-          <var-icon name="message-processing-outline" size="26px"/>
-        </var-badge>
-      </div>
-
-
     </div>
 
     <var-divider class="divider" vertical/>
@@ -118,6 +109,7 @@
       logout() {
         this.$cookies.remove("token")
         this.$store.commit("logout")
+        this.to_home()
       },
       to_home() {
         this.$router.push("/home")
@@ -178,8 +170,6 @@
       font-weight: bold;
       width: 40%;
     }
-
-
 
 
     #message {

@@ -17,6 +17,10 @@
       <var-icon class="tab-icon" size="30px" name="account-circle"/>
       用户信息
     </var-tab>
+    <var-tab class="tab" @click="this.$router.replace('/admin/upload-user')">
+      <var-icon class="tab-icon" size="30px" name="account-circle"/>
+      导入用户
+    </var-tab>
     <var-tab class="tab" @click="this.$router.replace('/admin/score')">
       <var-icon class="tab-icon" size="30px" name="file-document-outline"/>
       成绩管理
@@ -99,44 +103,49 @@
             active: 0
           },
           {
+            re: /^\/admin\/upload-user$/,
+            title: "用户管理 > 导入用户",
+            active: 1
+          },
+          {
             re: /^\/admin\/score$/,
             title: "用户管理 > 成绩管理",
-            active: 1
+            active: 2
           },
           {
             re: /^\/admin\/question-edit$/,
             title: "题库管理 > 题库信息",
-            active: 2
+            active: 3
           },
           {
             re: /^\/admin\/upload-question$/,
             title: "题库管理 > 上传题目",
-            active: 3
+            active: 4
           },
           {
             re: /^\/admin\/competition\/[0-9]*$/,
             title: "竞赛管理 > 竞赛详情",
-            active: 4
+            active: 5
           },
           {
             re: /^\/admin\/competition$/,
             title: "竞赛管理 > 竞赛列表",
-            active: 4
+            active: 5
           },
           {
             re: /^\/admin\/create-competition$/,
             title: "竞赛管理 > 新建竞赛",
-            active: 5
+            active: 6
           },
           {
             re: /^\/admin\/notice$/,
             title: "其它 > 公告管理",
-            active: 6
+            active: 7
           },
           {
             re: /^\/admin\/link$/,
             title: "其它 > 链接管理",
-            active: 7
+            active: 8
           }
         ],
         title: ""
@@ -215,7 +224,7 @@
   }
 
   #foot {
-    height: 40vh;
+    height: 30vh;
   }
 
   #bottom {

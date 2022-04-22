@@ -10,17 +10,19 @@
           <span style="margin: 20px 50px 0 0">开始时间：{{desc.start_time.replace("T"," ")}}</span>
           <span style="margin: 20px 50px 0 0">结束时间：{{desc.end_time.replace("T"," ")}}</span>
           <span v-if="desc.time_limit" style="margin: 20px 50px 0 0">答题限时:{{desc.time_limit}}分钟</span>
-          <span style="margin: 20px 50px 0 0">题目数:{{total}}题</span>
+          <span style="margin: 20px 50px 0 0">题目数:{{desc.total_num}}题</span>
+          <span style="margin: 20px 50px 0 0">参与人数:{{desc.answer_num}}人</span>
         </div>
 
       </div>
-      <div style="margin: 10px">
+      <div  style="margin: 10px;min-height: 100px">
         <DynamicTable
+          v-if="init&&!desc.is_random"
           title="题目"
           :ready="ready"
           :heads="heads"
           :data="data"
-          :total="total"
+          :total="desc.total_num"
           @search="search"
           @update="update"
         />
@@ -190,7 +192,6 @@
             ]
           },
         ],
-        total: null
       }
     },
     methods: {
@@ -199,12 +200,11 @@
         this.$ajax.api.get(
           `admin/question-bank/?cid=${this.$route.params.id}&` + query,
         ).then(res => {
-          if (res.data.msg !== "错误") {
+          if (res.data.code === 100) {
             this.data = res.data.result['results']
-            this.total = res.data.result['count']
           } else {
             this.$tip({
-              content: res.data.result,
+              content: res.data.msg,
               type: "warning",
               duration: 3000,
             })
@@ -224,7 +224,7 @@
           `admin/question-bank/${id}/`,
           data
         ).then(res => {
-          if (res.data.msg !== "错误") {
+          if (res.data.code === 100) {
             this.$tip({
               content: "已更新",
               type: "success",
@@ -232,7 +232,7 @@
             })
           } else {
             this.$tip({
-              content: res.data.result,
+              content: res.data.msg,
               type: "warning",
               duration: 3000,
             })
@@ -252,11 +252,11 @@
       this.$ajax.api.get(
         `admin/competition/${this.$route.params.id}/`,
       ).then(res => {
-        if (res.data.msg !== "错误") {
+        if (res.data.code === 100) {
           this.desc = res.data.result
         } else {
           this.$tip({
-            content: res.data.result,
+            content: res.data.msg,
             type: "warning",
             duration: 3000,
           })
@@ -274,12 +274,12 @@
       this.$ajax.api.get(
         `admin/question-bank/?cid=${this.$route.params.id}`,
       ).then(res => {
-        if (res.data.msg !== "错误") {
+        if (res.data.code === 100) {
           this.data = res.data.result.results
           this.total = res.data.result['count']
         } else {
           this.$tip({
-            content: res.data.result,
+            content: res.data.msg,
             type: "warning",
             duration: 3000,
           })

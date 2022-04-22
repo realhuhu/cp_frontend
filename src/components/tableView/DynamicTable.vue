@@ -150,18 +150,14 @@
           page: this.page,
           limit: 10
         }
-
         if (this.search_text) {
           query_obj.search = this.search_text
         }
-
-
         for (let head of this.heads.filter(x => x.filter)) {
           if (head.selected !== undefined) {
             query_obj[head.refer] = head.deserialize ? head.deserialize(head.selected) : head.selected
           }
         }
-
         let query = Object.keys(query_obj).map(x => x + "=" + query_obj[x]).join("&")
         this.$emit("search", query)
       },

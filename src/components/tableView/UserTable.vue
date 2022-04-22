@@ -50,6 +50,14 @@
             },
           },
           {
+            title: "一卡通号",
+            refer: "card",
+            editable: true,
+            style: {
+              width: "10%",
+            },
+          },
+          {
             title: "用户名",
             refer: "username",
             editable: true,
@@ -79,7 +87,7 @@
             style: {
               width: "20%",
             },
-            serialize: column => column["date_joined"].replace("T", " ")
+            serialize: column => column["date_joined"].replace("T", " ").substring(0, 16)
           },
           {
             title: "状态",
@@ -138,7 +146,6 @@
         total: 0,
         data: null,
         ready: false,
-
         popup_reset: false,
         column: "",
         re_pattens: this.$settings.re_pattens,
@@ -152,12 +159,12 @@
         this.$ajax.api.get(
           "admin/user/?" + query,
         ).then(res => {
-          if (res.data.msg !== "错误") {
+          if (res.data.code === 100) {
             this.data = res.data.result['results']
             this.total = res.data.result['count']
           } else {
             this.$tip({
-              content: res.data.result,
+              content: res.data.msg,
               type: "warning",
               duration: 3000,
             })
@@ -177,7 +184,7 @@
           `admin/user/${id}/`,
           data
         ).then(res => {
-          if (res.data.msg !== "错误") {
+          if (res.data.code === 100) {
             this.$tip({
               content: "已更新",
               type: "success",
@@ -185,7 +192,7 @@
             })
           } else {
             this.$tip({
-              content: res.data.result,
+              content: res.data.msg,
               type: "warning",
               duration: 3000,
             })
@@ -217,7 +224,7 @@
             password: this.password
           }
         ).then(res => {
-          if (res.data.msg !== "错误") {
+          if (res.data.code === 100) {
             this.$tip({
               content: "已更新",
               type: "success",
@@ -225,7 +232,7 @@
             })
           } else {
             this.$tip({
-              content: res.data.result,
+              content: res.data.msg,
               type: "warning",
               duration: 3000,
             })
@@ -246,13 +253,13 @@
       this.$ajax.api.get(
         "admin/user/",
       ).then(res => {
-        if (res.data.msg !== "错误") {
+        if (res.data.code === 100) {
           this.data = res.data.result['results']
           this.total = res.data.result['count']
           this.ready = true
         } else {
           this.$tip({
-            content: res.data.result,
+            content: res.data.msg,
             type: "warning",
             duration: 3000,
           })

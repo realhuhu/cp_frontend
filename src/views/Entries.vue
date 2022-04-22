@@ -34,9 +34,10 @@
             <div class="time"> 参赛时间:{{ item.start_time.substring(0,16).replace("T"," ") }}</div>
           </div>
           <div class="right">
-            <div class="score">{{ item.score }}/{{item.total}}</div>
+            <div class="score" v-if="item.score!==null">{{ item.score }}/{{item.total}}</div>
+            <div class="score" v-else>未提交</div>
           </div>
-          <div class="right tag">得分</div>
+          <div class="right tag" v-if="item.score!==null">得分</div>
         </div>
         <var-divider class="pc-divider" margin="0"/>
 

@@ -82,11 +82,18 @@
           },
           {
             title: "问题数量",
-            refer: "questions",
+            refer: "total_num",
             style: {
               width: "10%",
             },
-            serialize: column => column["questions"].length
+          },
+          {
+            title: "题目",
+            refer: "is_random",
+            style: {
+              width: "10%",
+            },
+            serialize: column => column["is_random"] ? "随机" : "相同",
           },
           {
             title: "状态",
@@ -127,12 +134,12 @@
         this.$ajax.api.get(
           "admin/competition/?" + query,
         ).then(res => {
-          if (res.data.msg !== "错误") {
+          if (res.data.code === 100) {
             this.data = res.data.result['results']
             this.total = res.data.result['count']
           } else {
             this.$tip({
-              content: res.data.result,
+              content: res.data.msg,
               type: "warning",
               duration: 3000,
             })
@@ -152,7 +159,7 @@
           `admin/competition/${id}/`,
           data
         ).then(res => {
-          if (res.data.msg !== "错误") {
+          if (res.data.code === 100) {
             this.$tip({
               content: "已更新",
               type: "success",
@@ -160,7 +167,7 @@
             })
           } else {
             this.$tip({
-              content: res.data.result,
+              content: res.data.msg,
               type: "warning",
               duration: 3000,
             })
@@ -183,13 +190,13 @@
       this.$ajax.api.get(
         "admin/competition/",
       ).then(res => {
-        if (res.data.msg !== "错误") {
+        if (res.data.code === 100) {
           this.data = res.data.result['results']
           this.total = res.data.result['count']
           this.ready = true
         } else {
           this.$tip({
-            content: res.data.result,
+            content: res.data.msg,
             type: "warning",
             duration: 3000,
           })

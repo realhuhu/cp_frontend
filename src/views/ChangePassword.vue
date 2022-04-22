@@ -158,6 +158,16 @@
   }
 
   @media screen and (max-width: 840px) {
+    #banner {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #F0F1F5;
+      z-index: -1;
+    }
+
     #tip-wrap, #title {
       display: none;
     }
