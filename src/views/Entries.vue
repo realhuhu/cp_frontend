@@ -9,6 +9,10 @@
     color="#f6f6f6"
     text-color="#333"
   >
+    <template #left>
+      <var-icon name="chevron-left" :size="24" @click="this.$router.return('/home')"/>
+      <div :size="24" @click="this.$router.return('/home')">返回</div>
+    </template>
   </var-app-bar>
 
   <div id="tip-wrap">
@@ -27,21 +31,33 @@
       @load="load"
 
     >
-      <var-cell :key="item" v-for="item in data" style="padding:0">
-        <div class="item">
-          <div class="left-wrap">
-            <div class="title"> {{ item.competition_name }}</div>
-            <div class="time"> 参赛时间:{{ item.start_time.substring(0,16).replace("T"," ") }}</div>
+      <div class="tip">点击可查看详情</div>
+      <var-collapse class="panel" accordion v-model="value" :offset="false">
+        <var-collapse-item style="cursor: pointer" :key="k" v-for="(item,k) in data" :name="k+''">
+          <template #title>
+            <div class="title">{{item.title}}</div>
+          </template>
+          <template #icon>
+            <div class="end_score">最终得分:{{score(item)}}</div>
+          </template>
+          <div class="card">
+            <div :key="record.id" v-for="record in item.record">
+              <var-divider margin="0">第{{record.answer_times}}次作答</var-divider>
+              <div class="item clear-fix" @click="to_record(record,item)">
+                <div class="left" style="padding: 10px 0">
+                  <div class="time">{{record.start_time.substring(0,16).replace("T"," ")}}</div>
+                  <div v-if="record.time_used" class="time">用时:{{record.time_used}}秒</div>
+                </div>
+                <div class="right">
+                  <div class="score" v-if="record.score!==null">{{ record.score }}/{{item.total_num}}</div>
+                  <div class="score" v-else>未提交</div>
+                </div>
+                <div class="right tag" v-if="record.score!==null">得分</div>
+              </div>
+            </div>
           </div>
-          <div class="right">
-            <div class="score" v-if="item.score!==null">{{ item.score }}/{{item.total}}</div>
-            <div class="score" v-else>未提交</div>
-          </div>
-          <div class="right tag" v-if="item.score!==null">得分</div>
-        </div>
-        <var-divider class="pc-divider" margin="0"/>
-
-      </var-cell>
+        </var-collapse-item>
+      </var-collapse>
     </var-list>
   </div>
 </template>
@@ -54,14 +70,19 @@
         finished: false,
         loading: false,
         next: null,
-        data: []
+        data: [],
+        value: "0"
       }
     },
     methods: {
+      score(item) {
+        return Math.max(...item.record.map(x => x.score))
+      },
       load() {
         this.$ajax.api.get(
           this.next || "competition/entry/",
         ).then(res => {
+          console.log(res.data);
           if (res.data.code === 100) {
             for (let i of res.data.result.results) {
               this.data.push(i)
@@ -71,8 +92,15 @@
           this.loading = false
           this.finished = !Boolean(this.next)
         })
+      },
+      to_record(record, item) {
+        if (record.score !== null) {
+          this.$router.push(`/record/${record.id}`)
+        } else {
+          this.$router.push(`/competition/${item.id}`)
+        }
       }
-    }
+    },
   }
 </script>
 
@@ -114,12 +142,13 @@
     }
 
     .item {
-      margin: 20px;
+      height: 60px;
+      cursor: pointer;
     }
   }
 
   @media screen and (max-width: 840px) {
-    #banner, #pc-title, .pc-divider, #tip-wrap {
+    #banner, #pc-title, #tip-wrap {
       display: none;
     }
 
@@ -140,20 +169,20 @@
       margin: 2px;
       padding: 3px;
       border-radius: 2px;
+      height: 60px;
       background-color: #f6f6f6;
+      cursor: pointer;
     }
   }
 
 
   .title {
     line-height: 40px;
-    font-size: 20px;
+    padding: 5px;
+    font-size: 17px;
     font-weight: bolder;
   }
 
-  .time {
-    line-height: 20px;
-  }
 
   .score {
     margin: 5px;
@@ -169,7 +198,35 @@
     color: #4ebaee;
   }
 
-  .left-wrap {
-    display: inline-block;
+  .panel {
+    --collapse-header-padding: 0 10px;
+    --collapse-content-padding: 0
+  }
+
+  .card {
+    margin: 5px;
+    background-color: #f6f6f6;
+    padding: 5px;
+    border-radius: 5px;
+  }
+
+  .end_score {
+    float: right;
+    margin: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #4ebaee;
+  }
+
+  .time {
+    line-height: 20px;
+  }
+
+  .tip {
+    text-align: center;
+    color: #999999;
+    font-size: 12px;
+    line-height: 30px;
+    background-color: #f6f6f6;
   }
 </style>

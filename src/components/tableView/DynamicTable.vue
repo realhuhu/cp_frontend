@@ -177,6 +177,24 @@
         this.$emit("extra", column);
       }
     },
+    mounted() {
+      let _this = this;
+      document.onkeydown = function (e) {
+        let key = window.event.keyCode;
+        if (key === 65 || key === 37) {
+          if(_this.page>1) {
+            _this.paginate(_this.page - 1)
+          }
+        }
+        if (key === 68 || key === 39) {
+          console.log(_this.page);
+          console.log(_this.total/10);
+          if(_this.page<_this.total/10) {
+            _this.paginate(_this.page + 1)
+          }
+        }
+      };
+    }
   }
 </script>
 

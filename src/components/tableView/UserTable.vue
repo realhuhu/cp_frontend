@@ -54,7 +54,7 @@
             refer: "card",
             editable: true,
             style: {
-              width: "10%",
+              width: "15%",
             },
           },
           {

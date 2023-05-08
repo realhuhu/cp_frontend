@@ -2,7 +2,7 @@
   <div style="height: 75px">
     <var-input
       clearable
-      :placeholder="placeholder || '用户名'"
+      :placeholder="placeholder || '一卡通号'"
       :rules="this.$settings.validators.card"
       v-model="username"
       @change="$emit('update:username',username)"

@@ -33,6 +33,14 @@ const routes = [
     }
   },
   {
+    path: "/record/:id",
+    component: () => import("views/Record"),
+    meta: {
+      auth: 1,
+      title: '详情'
+    }
+  },
+  {
     path: "/user-info",
     component: () => import("views/UserInfo"),
     meta: {

@@ -12,6 +12,7 @@
     "@wangeditor/editor": "^0.15.11",
     "@wangeditor/editor-for-vue": "^5.1.8-9",
     "axios": "^0.26.0",
+    "cloc": "^2.10.0",
     "core-js": "^3.6.5",
     "open-browser-webpack-plugin": "^0.0.5",
     "sass-loader": "^12.6.0",

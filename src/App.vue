@@ -1,6 +1,5 @@
 <template>
   <pc-nav-bar v-if="!is_admin"/>
-  <pe-tab-bar v-if="!is_admin" :active="active"/>
 
   <div v-if="!is_admin" id="content">
     <router-view></router-view>
@@ -55,6 +54,7 @@
               type: "warning",
               duration: 2000,
             })
+            this.$cookies.remove("token")
             return new Promise((resolve, reject) => {
               reject(res.data.msg)
             })
@@ -100,9 +100,7 @@
     #admin-content {
       margin: 80px 0 0 250px;
     }
-
   }
 
-  @media screen and (max-width: 840px) {
-  }
+
 </style>

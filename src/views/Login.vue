@@ -23,13 +23,13 @@
     <var-card class="card" id="card">
       <template #extra>
         <div v-if="!is_use_phone">
-          <username placeholder="一卡通号" v-model:username="card" @keyup.enter="login"/>
+          <username placeholder="一卡通号" v-model:username="username" @keyup.enter="login"/>
           <password v-model:password="password" @keyup.enter="login"/>
         </div>
 
         <div v-else>
-          <phone v-model:phone="card" @keyup.enter="login"/>
-          <msg-code v-model:code="password" method="login" :phone="card" @keyup.enter="login"/>
+          <phone v-model:phone="username" @keyup.enter="login"/>
+          <msg-code v-model:code="password" method="login" :phone="username" @keyup.enter="login"/>
         </div>
 
 
@@ -66,7 +66,7 @@
     },
     data() {
       return {
-        card: "",
+        username: "",
         password: "",
         is_use_phone: false,
         re_pattens: this.$settings.re_pattens
@@ -77,16 +77,16 @@
         let url, data
 
         if (this.is_use_phone) {
-          if (!this.re_pattens.phone.test(this.card)) return
+          if (!this.re_pattens.phone.test(this.username)) return
           if (!this.re_pattens.code.test(this.password)) return
         } else if (!this.is_use_phone) {
-          if (!this.re_pattens.card.test(this.card)) return
+          if (!this.re_pattens.card.test(this.username)) return
           if (!this.re_pattens.password.test(this.password)) return
         }
 
         url = "user/login/"
         data = {
-          card: this.card,
+          card: this.username,
           password: this.password
         }
 
@@ -97,7 +97,6 @@
           if (res.data.code === 103) {
             this.$cookies.set("token", res.data.result.token)
             this.$store.commit("login", res.data.result["user"])
-            console.log(this.$route.query.next);
             this.$router.replace(this.$route.query.next || "/home")
           } else {
             this.$tip({

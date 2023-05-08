@@ -3,7 +3,7 @@
   <var-app-bar
     id="app-bar"
     class="var-elevation--1"
-    title="校史校情竞赛"
+    title="校史校情知识竞赛"
     title-position="center"
     color="#f6f6f6"
     style="font-weight: bolder;"
@@ -14,14 +14,14 @@
     </template>
 
     <template #right>
-      <var-icon name="message-processing-outline" :size="24"/>
+      <var-icon @click="this.$router.push('/entries')" name="format-list-checkbox" :size="24"/>
       <div style="width: 1vw;"></div>
     </template>
   </var-app-bar>
 
   <div id="wrap" class="clear-fix">
     <div id="left">
-      <var-swipe class="var-elevation--1" id="swipe" :autoplay="2000">
+      <var-swipe class="var-elevation--1" id="swipe" :autoplay="4000">
         <var-swipe-item v-for="i in this.$store.state.swipe">
           <img class="swipe-item" :src="i.url">
         </var-swipe-item>
@@ -37,7 +37,7 @@
           v-model:active="active"
         >
           <var-tab>竞赛列表</var-tab>
-          <var-tab>公告</var-tab>
+<!--          <var-tab>公告</var-tab>-->
           <span style="width: 500px"></span>
         </var-tabs>
 
@@ -64,7 +64,7 @@
               :finished="finished"
               v-model:loading="loading"
               @load="load">
-              <var-cell :key="competition" v-for="competition in competitions">
+              <div class="card var-elevation--2" :key="competition" v-for="competition in competitions">
                 <div class="competition-card" @click="pop(competition)">
                   <div class="competition-title">{{competition.title}}</div>
                   <div class="competition-time">
@@ -77,45 +77,45 @@
                     <div>结束时间：{{competition.end_time.substring(0,16).replace("T"," ")}}</div>
                   </div>
                 </div>
-              </var-cell>
+              </div>
             </var-list>
           </var-tab-item>
 
-          <var-tab-item>
-            <div class="clear-fix">
-              <div class="search">
-                <var-input
-                  :hint="false"
-                  :line="false"
-                  text-color="#333"
-                  placeholder="搜索公告"
-                  v-model="article_value"
-                  @keydown.enter="article_search"
-                  @clear="article_search"
-                  clearable>
-                  <template #prepend-icon>
-                    <var-icon class="search-btn" name="magnify" @click="article_search"/>
-                  </template>
-                </var-input>
-              </div>
-            </div>
-            <var-list
-              :finished="article_finished"
-              v-model:loading="article_loading"
-              @load="article_load">
-              <var-cell :key="article" v-for="article in articles">
-                <div class="article-card" @click="this.$router.push( `/article/${article.id}`)">
-                  <div class="article-title">{{article.title}}</div>
-                  <div class=" clear-fix">
-                    <div class="article-time right ">
-                      {{article.create_time.substring(0,16).replace("T"," ")}}
-                    </div>
-                  </div>
-                  <div class="article-content"> {{article.description}}</div>
-                </div>
-              </var-cell>
-            </var-list>
-          </var-tab-item>
+<!--          <var-tab-item>-->
+<!--            <div class="clear-fix">-->
+<!--              <div class="search">-->
+<!--                <var-input-->
+<!--                  :hint="false"-->
+<!--                  :line="false"-->
+<!--                  text-color="#333"-->
+<!--                  placeholder="搜索公告"-->
+<!--                  v-model="article_value"-->
+<!--                  @keydown.enter="article_search"-->
+<!--                  @clear="article_search"-->
+<!--                  clearable>-->
+<!--                  <template #prepend-icon>-->
+<!--                    <var-icon class="search-btn" name="magnify" @click="article_search"/>-->
+<!--                  </template>-->
+<!--                </var-input>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <var-list-->
+<!--              :finished="article_finished"-->
+<!--              v-model:loading="article_loading"-->
+<!--              @load="article_load">-->
+<!--              <var-cell :key="article" v-for="article in articles">-->
+<!--                <div class="article-card" @click="this.$router.push( `/article/${article.id}`)">-->
+<!--                  <div class="article-title">{{article.title}}</div>-->
+<!--                  <div class=" clear-fix">-->
+<!--                    <div class="article-time right ">-->
+<!--                      {{article.create_time.substring(0,16).replace("T"," ")}}-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                  <div class="article-content"> {{article.description}}</div>-->
+<!--                </div>-->
+<!--              </var-cell>-->
+<!--            </var-list>-->
+<!--          </var-tab-item>-->
         </var-tabs-items>
       </div>
     </div>
@@ -162,7 +162,8 @@
         </div>
         <div class="time">开始时间：{{info.start_time.substring(0,16).replace("T"," ")}}</div>
         <div class="time">结束时间：{{info.end_time.substring(0,16).replace("T"," ")}}</div>
-        <div id="tip">题数：{{info.questions}}（{{info.time_limit?`限时${info.time_limit}分钟`:"不限时"}}）</div>
+        <div id="tip">题数：{{info.total_num}}（{{info.time_limit?`限时${info.time_limit}分钟`:"不限时"}}）</div>
+        <div style="color: red;">可答题次数：{{info.answer_times}}</div>
         <div id="answer-num">已有{{info.answer_num}}人作答</div>
         <div id="btn">
           <var-button block type="success" v-if="chip_style.type==='warning'" disabled>
@@ -182,6 +183,8 @@
       </div>
     </var-popup>
   </div>
+
+  <div class="bottom"><a href="https://beian.miit.gov.cn/">皖ICP备2021005102号-2</a></div>
 </template>
 
 <script>
@@ -487,6 +490,10 @@
   }
 
   @media screen and (max-width: 840px) {
+    .bottom {
+      font-size: 12px;
+    }
+
     #center, #right, .competition-time {
       display: none;
     }
@@ -543,7 +550,6 @@
     .competition-card, .article-card {
       padding: 10px;
       border-radius: 5px;
-      background-color: #f6f6f6;
       cursor: pointer;
     }
 
@@ -593,5 +599,18 @@
   #answer-num {
     padding-bottom: 20px;
     line-height: 30px;
+  }
+
+  .card {
+    margin: 10px;
+    border-radius: 5px;
+  }
+
+  .bottom {
+    display: flex;
+    justify-content: center;
+    text-decoration: none;
+    color: #000;
+    margin: 20vh 0 50px;
   }
 </style>

@@ -5,6 +5,7 @@
     :heads="swipe_heads"
     :data="swipe_data"
     :total="swipe_total"
+    :extend="swipe_extend"
     @search="swipe_search"
     @update="swipe_update"
     @extra="rem_swipe">
@@ -98,7 +99,17 @@
           }],
         swipe_data: false,
         swipe_total: false,
-
+        swipe_extend: {
+          title: "操作",
+          style: {
+            head: {
+              textAlign: "center"
+            },
+            body: {
+              width: "5%"
+            }
+          }
+        },
         top_ready: false,
         top_heads: [
           {
@@ -301,7 +312,7 @@
               duration: 3000,
             })
           }
-          this.top_search()
+          this.swipe_search()
           this.ready = true
         }).catch(err => {
           this.$tip({

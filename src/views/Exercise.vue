@@ -22,13 +22,13 @@
            @click="answer='A'"
            class="option"
            :class="{active:answer==='A'}">
-        A.{{question.choice_a}}
+        {{choice_num>2? "A.":""}}{{question.choice_a}}
       </div>
       <div v-if="question.choice_b"
            @click="answer='B'"
            class="option"
            :class="{active:answer==='B'}">
-        B.{{question.choice_b}}
+        {{choice_num>2? "B.":""}}{{question.choice_b}}
       </div>
       <div v-if="question.choice_c"
            @click="answer='C'"
@@ -51,7 +51,7 @@
         correct:right_answer==='A',
         wrong:answer==='A' && answer!==right_answer
       }">
-        A.{{question.choice_a}}
+        {{choice_num>2? "A.":""}}{{question.choice_a}}
       </div>
       <div v-if="question.choice_b"
            class="option"
@@ -59,7 +59,7 @@
         correct:right_answer==='B',
         wrong:answer==='B' && answer!==right_answer
       }">
-        B.{{question.choice_b}}
+        {{choice_num>2? "B.":""}}{{question.choice_b}}
       </div>
       <div v-if="question.choice_c"
            class="option"
@@ -103,6 +103,16 @@
         right_answer: null
       }
     },
+    computed: {
+      choice_num() {
+        let num = 0
+        if (this.question.choice_a) num++
+        if (this.question.choice_b) num++
+        if (this.question.choice_c) num++
+        if (this.question.choice_d) num++
+        return num
+      }
+    },
     methods: {
       submit() {
         if (!this.answer) return
@@ -115,7 +125,13 @@
         ).then(res => {
           this.answered = true
           this.right = res.data.result.right
-          this.right_answer = res.data.result.answer
+          if (res.data.result.answer === "√") {
+            this.right_answer = "A"
+          } else if (res.data.result.answer === "X") {
+            this.right_answer = "B"
+          } else {
+            this.right_answer = res.data.result.answer
+          }
         })
       },
       refresh() {
@@ -181,11 +197,10 @@
 
     .option {
       margin: 10px 30px;
-      height: 50px;
       border-radius: 5px;
       border: 1px solid #ddd;
-      line-height: 50px;
-      text-indent: 20px;
+      line-height: 40px;
+      padding: 0 20px;
     }
 
     #next {

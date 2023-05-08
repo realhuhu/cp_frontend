@@ -8,13 +8,13 @@
 
     <div id="center">
       <div id="name" @click="to_home">
-        校史知识竞赛
+        校史校情知识竞赛
       </div>
     </div>
 
     <var-divider class="divider" vertical/>
 
-    <div id="right">
+    <div class="left">
       <var-image
         id="avatar"
         width="48px"
@@ -25,52 +25,50 @@
         :src="icon"
         @click.stop="avatar_click"
       />
+    </div>
+    <div class="var-elevation--1" id="popup" v-if="show_user_info" @click="show_user_info=false">
+      <div id="options-wrap">
+        <var-image
+          width="70px"
+          height="70px"
+          fit="cover"
+          radius="50%"
+          style="margin: 20px 70px 10px;border: 1px solid rgba(200,200,200,0.9)"
+          :src="icon"
+          @click.stop="avatar_click"
+        />
+        <div id="username">
+          {{user.username}}
+        </div>
 
+        <var-divider margin="0"/>
 
-      <div class="var-elevation--1" id="popup" v-if="show_user_info" @click="show_user_info=false">
-        <div id="options-wrap">
-          <var-image
-            width="70px"
-            height="70px"
-            fit="cover"
-            radius="50%"
-            style="margin: 20px 70px 10px;border: 1px solid rgba(200,200,200,0.9)"
-            :src="icon"
-            @click.stop="avatar_click"
-          />
-          <div id="username">
-            {{user.username}}
-          </div>
+        <div class="btn" @click="this.$router.push({path: '/user-info', query: {next: this.$route.path}})">
+          <var-icon class="btn-icon-left" size="20" name="account-circle-outline"/>
+          个人信息
+          <var-icon class="btn-icon-right" size="20" name="chevron-right"/>
+        </div>
+        <div class="btn" @click="this.$router.replace('/change-password')">
+          <var-icon class="btn-icon-left" size="20" name="cog-outline"/>
+          修改密码
+          <var-icon class="btn-icon-right" size="20" name="chevron-right"/>
+        </div>
+        <div class="btn" @click="this.$router.replace('/reset-password')">
+          <var-icon class="btn-icon-left" size="20" name="cellphone"/>
+          找回密码
+          <var-icon class="btn-icon-right" size="20" name="chevron-right"/>
+        </div>
+        <div v-if="user.is_superuser" class="btn" @click="this.$router.replace('/admin')">
+          <var-icon class="btn-icon-left" size="20" name="notebook"/>
+          管理员页面
+          <var-icon class="btn-icon-right" size="20" name="chevron-right"/>
+        </div>
 
-          <var-divider margin="0"/>
+        <var-divider margin="0"/>
 
-          <div class="btn" @click="this.$router.push({path: '/user-info', query: {next: this.$route.path}})">
-            <var-icon class="btn-icon-left" size="20" name="account-circle-outline"/>
-            个人信息
-            <var-icon class="btn-icon-right" size="20" name="chevron-right"/>
-          </div>
-          <div class="btn" @click="this.$router.replace('/change-password')">
-            <var-icon class="btn-icon-left" size="20" name="cog-outline"/>
-            修改密码
-            <var-icon class="btn-icon-right" size="20" name="chevron-right"/>
-          </div>
-          <div class="btn" @click="this.$router.replace('/reset-password')">
-            <var-icon class="btn-icon-left" size="20" name="cellphone"/>
-            找回密码
-            <var-icon class="btn-icon-right" size="20" name="chevron-right"/>
-          </div>
-          <div v-if="user.is_superuser" class="btn" @click="this.$router.replace('/admin')">
-            <var-icon class="btn-icon-left" size="20" name="notebook"/>
-            管理员页面
-            <var-icon class="btn-icon-right" size="20" name="chevron-right"/>
-          </div>
-
-          <var-divider margin="0"/>
-
-          <div class="btn" @click="logout">
-            <var-icon class="btn-icon-left" size="20" name="information-outline"/>
-            退出登录
-          </div>
+        <div class="btn" @click="logout">
+          <var-icon class="btn-icon-left" size="20" name="information-outline"/>
+          退出登录
         </div>
       </div>
     </div>
@@ -224,8 +222,6 @@
     #avatar, #message, #search-btn, #name, #logo, .btn {
       cursor: pointer;
     }
-
-
   }
 
 

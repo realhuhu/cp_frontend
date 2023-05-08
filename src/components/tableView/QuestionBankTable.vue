@@ -41,7 +41,7 @@
             refer: "choice_a",
             editable: true,
             style: {
-              width: "8%",
+              width: "12%",
             },
           },
           {
@@ -49,7 +49,7 @@
             refer: "choice_b",
             editable: true,
             style: {
-              width: "8%",
+              width: "12%",
             },
           },
           {
@@ -57,7 +57,7 @@
             refer: "choice_c",
             editable: true,
             style: {
-              width: "8%",
+              width: "12%",
             },
           },
           {
@@ -65,7 +65,7 @@
             refer: "choice_d",
             editable: true,
             style: {
-              width: "8%",
+              width: "12%",
             },
           },
           {
@@ -88,47 +88,47 @@
               "D"
             ]
           },
-          {
-            title: "类型",
-            refer: "category",
-            editable: true,
-            filter: true,
-            edit_type: "select",
-            style: {
-              width: "8%",
-              textAlign: "center"
-            },
-            tag_style: {
-              textAlign: "center"
-            },
-            options: [
-              "党史",
-              "党史类",
-              "改革开放史",
-              "社会主义发展史",
-              "新中国史",
-            ],
-          },
-          {
-            title: "难度",
-            refer: "difficulty",
-            editable: true,
-            filter: true,
-            edit_type: "select",
-            style: {
-              width: "8%",
-              textAlign: "center"
-            },
-            tag_style: {
-              textAlign: "center"
-            },
-            options: [
-              "简单",
-              "一般",
-              "中等",
-              "困难"
-            ]
-          },
+          // {
+          //   title: "类型",
+          //   refer: "category",
+          //   editable: true,
+          //   filter: true,
+          //   edit_type: "select",
+          //   style: {
+          //     width: "8%",
+          //     textAlign: "center"
+          //   },
+          //   tag_style: {
+          //     textAlign: "center"
+          //   },
+          //   options: [
+          //     "党史",
+          //     "党史类",
+          //     "改革开放史",
+          //     "社会主义发展史",
+          //     "新中国史",
+          //   ],
+          // },
+          // {
+          //   title: "难度",
+          //   refer: "difficulty",
+          //   editable: true,
+          //   filter: true,
+          //   edit_type: "select",
+          //   style: {
+          //     width: "8%",
+          //     textAlign: "center"
+          //   },
+          //   tag_style: {
+          //     textAlign: "center"
+          //   },
+          //   options: [
+          //     "简单",
+          //     "一般",
+          //     "中等",
+          //     "困难"
+          //   ]
+          // },
           {
             title: "正确率",
             style: {

@@ -10,21 +10,17 @@
       <var-form ref="form">
         <var-input
           class="input"
-          placeholder="学生姓名"
-          :rules="[v => !!v || '内容不能为空']"
+          placeholder="姓名"
           v-model="user.username"
         />
-
         <var-input
           class="input"
           placeholder="一卡通号"
           :rules="rule.card"
           v-model="user.card"
         />
-
         <var-input
           class="input"
-          type="password"
           placeholder="密码"
           :rules="rule.password"
           v-model="user.password"
@@ -64,8 +60,8 @@
           <var-col span="6">
             <var-select
               class="select"
-              placeholder="密码"
-              v-model="map.password"
+              placeholder="一卡通号"
+              v-model="map.card"
             >
               <var-option v-for="option in heads" :label="option"/>
             </var-select>
@@ -74,8 +70,8 @@
           <var-col span="6">
             <var-select
               class="select"
-              placeholder="一卡通号"
-              v-model="map.card"
+              placeholder="密码"
+              v-model="map.password"
             >
               <var-option v-for="option in heads" :label="option"/>
             </var-select>
@@ -102,7 +98,7 @@
         user: {
           username: "",
           card: "",
-          password: "",
+          password: ""
         },
         active: 0,
 
@@ -136,7 +132,6 @@
             this.user = {
               username: "",
               card: "",
-              password: "",
             }
           } else {
             this.$tip({
@@ -160,8 +155,8 @@
         for (let i of this.raw_data) {
           questions.push({
             username: i[this.map["username"]],
+            card: i[this.map["card"]],
             password: i[this.map["password"]],
-            card: i[this.map["card"]]
           })
         }
         this.$ajax.api({

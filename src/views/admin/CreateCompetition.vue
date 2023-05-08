@@ -18,13 +18,19 @@
             />
           </var-col>
           <var-col span="4" offset="2">
-
             <var-input
               placeholder="结束时间"
               v-model="end_time"
               clearable
               @click="_clickEnd"
             />
+          </var-col>
+          <var-col span="4" offset="2">
+              <var-input
+                placeholder="可答题次数"
+                type="number"
+                v-model="answer_times"
+              />
           </var-col>
         </var-row>
         <br>
@@ -38,6 +44,7 @@
             v-model="time_limit"
           />
         </div>
+
 
         <div style="margin-top: 30px;line-height: 30px">比赛类型</div>
         <var-radio-group v-model="is_random">
@@ -74,9 +81,15 @@
           <div style="width: 200px;">
             <var-input
               style="width: 200px"
-              placeholder="题目数量"
+              placeholder="选择题数量"
               type="number"
-              v-model="select_num"
+              v-model="choice_num"
+            />
+            <var-input
+              style="width: 200px"
+              placeholder="判断题数量"
+              type="number"
+              v-model="TF_num"
             />
           </div>
         </div>
@@ -145,7 +158,6 @@
         question_list: [],
         is_random: 1,
         is_limit: false,
-        select_num: "",
 
         select_type: 0,
         ready: false,
@@ -274,6 +286,10 @@
         popup: false,
         isSelectDate: true,
         isStart: true,
+
+        TF_num: null,
+        choice_num: null,
+        answer_times: null
       }
     },
     methods: {
@@ -311,7 +327,7 @@
         this.question_list = this.question_list.filter(x => x !== i)
       },
       create_competition() {
-        if (!this.title || !this.start_time || !this.end_time) {
+        if (!this.title || !this.start_time || !this.end_time || !this.answer_times) {
           this.$tip({
             content: "还有信息未填入",
             type: "warning",
@@ -322,7 +338,6 @@
 
         let data = {}
         if (this.select_type === 0 && this.is_random === 0) {
-          console.log(1);
           if (!this.question_num) {
             this.$tip({
               content: "请输入题目数",
@@ -336,7 +351,8 @@
             start_time: this.start_time,
             end_time: this.end_time,
             question_num: this.question_num,
-            time_limit: this.is_limit ? this.time_limit : null
+            time_limit: this.is_limit ? this.time_limit : null,
+            answer_times: this.answer_times || 1
           }
         }
 
@@ -354,12 +370,13 @@
             start_time: this.start_time,
             end_time: this.end_time,
             question_list: this.question_list,
-            time_limit: this.is_limit ? this.time_limit : null
+            time_limit: this.is_limit ? this.time_limit : null,
+            answer_times: this.answer_times || 1
           }
         }
 
         if (this.is_random === 1) {
-          if (!this.select_num) {
+          if (!this.choice_num || !this.TF_num) {
             this.$tip({
               content: "请选择题目数量",
               type: "warning",
@@ -371,8 +388,10 @@
             title: this.title,
             start_time: this.start_time,
             end_time: this.end_time,
-            select_num: this.select_num,
-            time_limit: this.is_limit ? this.time_limit : null
+            choice_num: this.choice_num,
+            TF_num: this.TF_num,
+            time_limit: this.is_limit ? this.time_limit : null,
+            answer_times: this.answer_times || 1
           }
         }
 

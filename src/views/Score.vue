@@ -27,13 +27,18 @@
       <div id="time">
         用时：{{data.time_used}}秒
       </div>
+
     </div>
     <div v-else>
       <div id="invalid">成绩无效</div>
     </div>
 
-    <div id="btn">
+    <div class="btn">
       <var-button type="success" block @click="this.$router.replace('/home')">返回主页</var-button>
+    </div>
+    <div class="btn2">
+      <var-button type="info" block @click="this.$router.replace(`/record/${this.data.id}`)">查看详情
+      </var-button>
     </div>
   </div>
 
@@ -96,7 +101,7 @@
       text-align: center;
     }
 
-    #btn {
+    .btn,.btn2 {
       width: 100px;
       margin: 20px auto;
     }
@@ -139,7 +144,7 @@
       text-align: center;
     }
 
-    #btn {
+    .btn {
       display: none;
     }
   }

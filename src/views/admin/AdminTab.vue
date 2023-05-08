@@ -1,63 +1,114 @@
 <template>
   <div id="background"/>
-
-  <var-tabs
-    id="tabs"
-    class="vertical-tabs"
-    elevation
-    layout-direction="vertical"
-    color="#303f56"
-    active-color="#95bbff"
-    inactive-color="#f6f6f6"
-    v-model:active="active"
-  >
+  <div id="tabs" style="background-color: rgb(48, 63, 86)">
     <div id="title">校史竞赛管理系统</div>
-    <var-divider description="用户管理"/>
-    <var-tab class="tab" @click="this.$router.replace('/admin/user')">
-      <var-icon class="tab-icon" size="30px" name="account-circle"/>
-      用户信息
-    </var-tab>
-    <var-tab class="tab" @click="this.$router.replace('/admin/upload-user')">
-      <var-icon class="tab-icon" size="30px" name="account-circle"/>
-      导入用户
-    </var-tab>
-    <var-tab class="tab" @click="this.$router.replace('/admin/score')">
-      <var-icon class="tab-icon" size="30px" name="file-document-outline"/>
-      成绩管理
-    </var-tab>
-    <var-divider description="题库管理"/>
-    <var-tab class="tab" @click="this.$router.replace('/admin/question-edit')">
-      <var-icon class="tab-icon" size="30px" name="notebook"/>
-      题库信息
-    </var-tab>
-    <var-tab class="tab" @click="this.$router.replace('/admin/upload-question')">
-      <var-icon class="tab-icon" size="30px" name="upload"/>
-      上传题目
-    </var-tab>
-    <var-divider description="竞赛管理"/>
-    <var-tab class="tab" @click="this.$router.replace('/admin/competition')">
-      <var-icon class="tab-icon" size="30px" name="format-list-checkbox"/>
-      竞赛列表
-    </var-tab>
-    <var-tab class="tab" @click="this.$router.replace('/admin/create-competition')">
-      <var-icon class="tab-icon" size="30px" name="plus"/>
-      新建竞赛
-    </var-tab>
-    <var-divider description="其它"/>
-    <var-tab class="tab" @click="this.$router.replace('/admin/notice')">
-      <var-icon class="tab-icon" size="30px" name="content-copy"/>
-      公告管理
-    </var-tab>
-    <var-tab class="tab" @click="this.$router.replace('/admin/link')">
-      <var-icon class="tab-icon" size="30px" name="plus"/>
-      链接设置
-    </var-tab>
-    <div id="foot">
-      <div id="bottom">
-        <img id="logo" src="~assets/img/logo.png" alt="" style="color: green;" @click="this.$router.replace('/home')">
-      </div>
+
+    <var-collapse v-model="value" accordion :offset="false"
+                  style="--collapse-background:rgb(48, 63, 86);--collapse-text-color:#999;--collapse-content-padding:0">
+      <var-collapse-item title="用户管理" name="1">
+        <div class="tab" @click="this.$router.replace('/admin/user')">
+          <var-icon class="tab-icon" size="30px" name="account-circle"/>
+          用户信息
+        </div>
+        <div class="tab" @click="this.$router.replace('/admin/upload-user')">
+          <var-icon class="tab-icon" size="30px" name="account-circle"/>
+          导入用户
+        </div>
+        <div class="tab" @click="this.$router.replace('/admin/score')">
+          <var-icon class="tab-icon" size="30px" name="file-document-outline"/>
+          成绩管理
+        </div>
+      </var-collapse-item>
+      <var-collapse-item title="题库管理" name="2">
+        <div class="tab" @click="this.$router.replace('/admin/question-edit')">
+          <var-icon class="tab-icon" size="30px" name="notebook"/>
+          题库信息
+        </div>
+        <div class="tab" @click="this.$router.replace('/admin/upload-question')">
+          <var-icon class="tab-icon" size="30px" name="upload"/>
+          上传题目
+        </div>
+      </var-collapse-item>
+      <var-collapse-item title="竞赛管理" name="3">
+        <div class="tab" @click="this.$router.replace('/admin/competition')">
+          <var-icon class="tab-icon" size="30px" name="format-list-checkbox"/>
+          竞赛列表
+        </div>
+        <div class="tab" @click="this.$router.replace('/admin/create-competition')">
+          <var-icon class="tab-icon" size="30px" name="plus"/>
+          新建竞赛
+        </div>
+      </var-collapse-item>
+      <var-collapse-item title="其它" name="4">
+        <div class="tab" @click="this.$router.replace('/admin/notice')">
+          <var-icon class="tab-icon" size="30px" name="content-copy"/>
+          公告管理
+        </div>
+        <div class="tab" @click="this.$router.replace('/admin/link')">
+          <var-icon class="tab-icon" size="30px" name="plus"/>
+          链接设置
+        </div>
+      </var-collapse-item>
+    </var-collapse>
+    <div id="bottom">
+      <img id="logo" src="~assets/img/logo.png" alt="" style="color: green;" @click="this.$router.replace('/home')">
     </div>
-  </var-tabs>
+  </div>
+
+  <!--    <var-tabs-->
+  <!--      id="tabs"-->
+  <!--      class="vertical-tabs"-->
+  <!--      elevation-->
+  <!--      layout-direction="vertical"-->
+  <!--      color="#303f56"-->
+  <!--      active-color="#95bbff"-->
+  <!--      inactive-color="#f6f6f6"-->
+  <!--      v-model:active="active"-->
+  <!--    >-->
+  <!--      <div id="title">校史竞赛管理系统</div>-->
+
+  <!--      <var-divider description="用户管理"/>-->
+  <!--      <var-tab class="tab" @click="this.$router.replace('/admin/user')">-->
+  <!--        <var-icon class="tab-icon" size="30px" name="account-circle"/>-->
+  <!--        用户信息-->
+  <!--      </var-tab>-->
+  <!--      <var-tab class="tab" @click="this.$router.replace('/admin/upload-user')">-->
+  <!--        <var-icon class="tab-icon" size="30px" name="account-circle"/>-->
+  <!--        导入用户-->
+  <!--      </var-tab>-->
+  <!--      <var-tab class="tab" @click="this.$router.replace('/admin/score')">-->
+  <!--        <var-icon class="tab-icon" size="30px" name="file-document-outline"/>-->
+  <!--        成绩管理-->
+  <!--      </var-tab>-->
+  <!--      <var-divider description="题库管理"/>-->
+  <!--      <var-tab class="tab" @click="this.$router.replace('/admin/question-edit')">-->
+  <!--        <var-icon class="tab-icon" size="30px" name="notebook"/>-->
+  <!--        题库信息-->
+  <!--      </var-tab>-->
+  <!--      <var-tab class="tab" @click="this.$router.replace('/admin/upload-question')">-->
+  <!--        <var-icon class="tab-icon" size="30px" name="upload"/>-->
+  <!--        上传题目-->
+  <!--      </var-tab>-->
+  <!--      <var-divider description="竞赛管理"/>-->
+  <!--      <var-tab class="tab" @click="this.$router.replace('/admin/competition')">-->
+  <!--        <var-icon class="tab-icon" size="30px" name="format-list-checkbox"/>-->
+  <!--        竞赛列表-->
+  <!--      </var-tab>-->
+  <!--      <var-tab class="tab" @click="this.$router.replace('/admin/create-competition')">-->
+  <!--        <var-icon class="tab-icon" size="30px" name="plus"/>-->
+  <!--        新建竞赛-->
+  <!--      </var-tab>-->
+  <!--      <var-divider description="其它"/>-->
+  <!--      <var-tab class="tab" @click="this.$router.replace('/admin/notice')">-->
+  <!--        <var-icon class="tab-icon" size="30px" name="content-copy"/>-->
+  <!--        公告管理-->
+  <!--      </var-tab>-->
+  <!--      <var-tab class="tab" @click="this.$router.replace('/admin/link')">-->
+  <!--        <var-icon class="tab-icon" size="30px" name="plus"/>-->
+  <!--        链接设置-->
+  <!--      </var-tab>-->
+  <!-- -->
+  <!--    </var-tabs>-->
 
   <div id="banner">
     <span>
@@ -95,6 +146,7 @@
     data() {
       return {
         active: 0,
+        value: "1",
         re_pattens: [],
         data: [
           {
@@ -200,13 +252,18 @@
   }
 
   .tab {
+    height: 50px;
     font-size: 15px;
+    line-height: 50px;
     font-weight: bolder;
     justify-content: left;
+    cursor: pointer;
+    color: #f6f6f6;
   }
 
   .tab:hover {
     background-color: #2a2e3b;
+    color: #4ebaee;
   }
 
   #title {
@@ -220,16 +277,14 @@
   }
 
   .tab-icon {
-    margin: 0 10px;
+    margin: 10px;
   }
 
-  #foot {
-    height: 30vh;
-  }
 
   #bottom {
     position: absolute;
     bottom: 0;
+    background-color: rgb(48, 63, 86);
   }
 
   #logo {

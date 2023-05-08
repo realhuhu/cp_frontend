@@ -74,24 +74,32 @@
             deserialize: raw => raw === "不限时" ? null : raw
           },
           {
+            title: "可答题次数",
+            refer: "answer_times",
+            editable: true,
+            style: {
+              width: "8%",
+            },
+          },
+          {
             title: "参与人数",
             refer: "answer_num",
             style: {
-              width: "10%",
+              width: "8%",
             }
           },
           {
             title: "问题数量",
             refer: "total_num",
             style: {
-              width: "10%",
+              width: "8%",
             },
           },
           {
             title: "题目",
             refer: "is_random",
             style: {
-              width: "10%",
+              width: "8%",
             },
             serialize: column => column["is_random"] ? "随机" : "相同",
           },
@@ -102,7 +110,7 @@
             filter: true,
             edit_type: "select",
             style: {
-              width: "10%",
+              width: "8%",
             },
             serialize: column => column["is_active"] ? "正常" : "屏蔽",
             deserialize: raw => raw === "正常",

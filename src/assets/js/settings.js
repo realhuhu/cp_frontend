@@ -5,6 +5,7 @@ let api_url = "https://api.seutools.com/"
 
 let re_pattens = {
   card: /^[0-9]{9}$/,
+  username: /^[a-zA-Z0-9\u4e00-\u9fa5]{1,16}$/,
   password: /^[a-zA-Z0-9-*/+.~!@#$%^&()]{6,16}$/,
   phone: /^1[3-9][0-9]{9}$/,
   code: /^[0-9]{4}$/,
@@ -12,7 +13,12 @@ let re_pattens = {
 
 let validators = {
   card: [
-    v => re_pattens.card.test(v) || "请输入9位一卡通号",
+    v => v.length === 9 || '请输入9位一卡通号',
+    v => re_pattens.card.test(v) || "不能含有非法字符",
+  ],
+  username: [
+    v => 16 >= v.length && v.length >= 1 || '长度在 1 到 16 个字符',
+    v => re_pattens.username.test(v) || "不能含有非法字符",
   ],
   password: [
     v => 16 >= v.length && v.length >= 6 || '长度在 6 到 16 个字符',

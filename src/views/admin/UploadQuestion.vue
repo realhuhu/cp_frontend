@@ -281,7 +281,6 @@
               duration: 3000,
             })
           }
-
         }).catch(err => {
           this.$tip({
             content: err,
@@ -290,21 +289,59 @@
           })
         })
       },
-      batchUpload() {
-        if (Object.values(this.map).filter(x => x === "").length) return
+      formatDate(numb) {
+        if (numb instanceof Date) {
+          let _date = new Date(numb.getTime() + 1000 * (8 * 3600 + 43))
+          let year = _date.getFullYear()
+          let month = _date.getMonth() + 1
+          let date = _date.getDate()
+          return year + "年" + (month < 10 ? '0' + month : month) + "月" + (date < 10 ? '0' + date : date) + "日"
+        } else {
+          return numb
+        }
+      },
+      date_parse(raw) {
+        let choice_a_date = this.formatDate(raw["choice_a"])
+        let choice_b_date = this.formatDate(raw["choice_b"])
+        let choice_c_date = this.formatDate(raw["choice_c"])
+        let choice_d_date = this.formatDate(raw["choice_d"])
+        try {
+          if (choice_a_date.endsWith("01月01日") && choice_b_date.endsWith("01月01日") && choice_c_date.endsWith("01月01日") && choice_d_date.endsWith("01月01日")) {
+            raw["choice_a"] = choice_a_date.replace("01月01日", "")
+            raw["choice_b"] = choice_b_date.replace("01月01日", "")
+            raw["choice_c"] = choice_c_date.replace("01月01日", "")
+            raw["choice_d"] = choice_d_date.replace("01月01日", "")
+          } else if (choice_a_date.endsWith("01日") && choice_b_date.endsWith("01日") && choice_c_date.endsWith("01日") && choice_d_date.endsWith("01日")) {
+            raw["choice_a"] = choice_a_date.replace("01日", "")
+            raw["choice_b"] = choice_b_date.replace("01日", "")
+            raw["choice_c"] = choice_c_date.replace("01日", "")
+            raw["choice_d"] = choice_d_date.replace("01日", "")
+          } else {
+            raw["choice_a"] = choice_a_date
+            raw["choice_b"] = choice_b_date
+            raw["choice_c"] = choice_c_date
+            raw["choice_d"] = choice_d_date
+          }
+          return raw
+        } catch (e) {
+          return raw
 
+        }
+
+      },
+      batchUpload() {
         let questions = []
         for (let i of this.raw_data) {
-          questions.push({
-            content: i[this.map["content"]],
-            choice_a: i[this.map["choice_a"]],
-            choice_b: i[this.map["choice_b"]],
-            choice_c: i[this.map["choice_c"]],
-            choice_d: i[this.map["choice_d"]],
-            answer: i[this.map["answer"]],
-            category: i[this.map["category"]],
-            difficulty: i[this.map["difficulty"]],
-          })
+          questions.push(this.date_parse({
+            content: this.map["content"] ? i[this.map["content"]] : "",
+            choice_a: this.map["choice_a"] ? i[this.map["choice_a"]] : "",
+            choice_b: this.map["choice_b"] ? i[this.map["choice_b"]] : "",
+            choice_c: this.map["choice_c"] ? i[this.map["choice_c"]] : "",
+            choice_d: this.map["choice_d"] ? i[this.map["choice_d"]] : "",
+            answer: this.map["answer"] ? i[this.map["answer"]] : "",
+            category: this.map["category"] ? i[this.map["category"]] : "",
+            difficulty: this.map["difficulty"] ? i[this.map["difficulty"]] : "",
+          }))
         }
         this.$ajax.api({
           method: 'POST',
@@ -359,8 +396,9 @@
 
         reader.onload = function (ev) {
           const excel = require("xlsx")
-          let workbook = excel.read(ev.target.result, {type: 'binary'});
+          let workbook = excel.read(ev.target.result, {type: 'binary', cellDates: true});
           _this.raw_data = excel.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]])
+          console.log(_this.raw_data);
           _this.heads = Object.keys(_this.raw_data[0]);
           _this.select = true
         };

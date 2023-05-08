@@ -11,6 +11,9 @@
     style="font-weight: bolder;"
     text-color="#333"
   >
+    <template #left>
+      <var-icon name="chevron-left" :size="24" @click="this.$router.return('/home')"/>
+    </template>
   </var-app-bar>
 
   <div v-if="ready" class="var-elevation--5" id="wrap">
@@ -18,12 +21,11 @@
       {{info.title}}
     </div>
     <div v-if="info.time_limit" id="timer">
-      <var-countdown :time="time_limit" format="HH 时 mm 分 ss 秒" @end="upload(true)"/>
+      <var-countdown :time="time_limit" format="HH 时 mm 分 ss 秒" @end="end"/>
       <var-divider margin="0"/>
     </div>
 
     <div id="progress">{{cursor+1}}/{{info.total_num}}</div>
-
     <div id="content">
       {{questions[cursor].content}}
     </div>
@@ -33,26 +35,34 @@
         class="option"
         :class="{active:questions[cursor].answer==='A'}" v-if="questions[cursor].choice_a"
         @click="questions[cursor].answer='A'">
-        A.{{questions[cursor].choice_a}}
+        {{choice_num(questions[cursor])>2? "A.":""}}{{questions[cursor].choice_a}}
       </div>
+
+
       <div
         class="option"
         :class="{active:questions[cursor].answer==='B'}" v-if="questions[cursor].choice_b"
         @click="questions[cursor].answer='B'">
-        B.{{questions[cursor].choice_b}}
+        {{choice_num(questions[cursor])>2? "B.":""}}{{questions[cursor].choice_b}}
       </div>
+
+
       <div
         class="option"
         :class="{active:questions[cursor].answer==='C'}" v-if="questions[cursor].choice_c"
         @click="questions[cursor].answer='C'">
         C.{{questions[cursor].choice_c}}
       </div>
+
+
       <div
         class="option"
         :class="{active:questions[cursor].answer==='D'}" v-if="questions[cursor].choice_d"
         @click="questions[cursor].answer='D'">
         D.{{questions[cursor].choice_d}}
       </div>
+
+
     </div>
 
     <div id="crease" class="clear-fix">
@@ -115,15 +125,23 @@
         cursor: 0,
         show: false,
         time_limit: null,
-        page: 0
+        page: 0,
       }
     },
     methods: {
+      choice_num(question) {
+        let num = 0
+        if (question.choice_a) num++
+        if (question.choice_b) num++
+        if (question.choice_c) num++
+        if (question.choice_d) num++
+        return num
+      },
       cursor_decrease() {
         if (this.cursor !== 0) this.cursor--
       },
       cursor_increase() {
-        if (this.cursor !== this.info.questions - 1) this.cursor++
+        if (this.cursor !== this.info.total_num - 1) this.cursor++
       },
       change_cursor(k) {
         this.show = false
@@ -142,23 +160,17 @@
           this.upload(true)
         }
       },
+      end() {
+        if (window.location.pathname.indexOf("competition") !== -1) this.upload(true)
+      },
       upload(finish) {
         this.$ajax.api.post(
           `competition/${this.$route.params.id}/upload/`,
           {
             answer: this.questions,
-            finish: finish
           }
         ).then(res => {
           if (res.data.code === 122) {
-            if (finish) {
-              this.$tip({
-                content: "已提交",
-                type: "success",
-                duration: 1000,
-              })
-              this.$router.replace(`/score/${this.$route.params.id}/`)
-            }
           } else {
             this.$tip({
               content: res.data.msg,
@@ -167,6 +179,21 @@
             })
           }
         })
+        if (finish) {
+          this.$router.replace(`/score/${this.$route.params.id}/`)
+        }
+      },
+      map(raw) {
+        let data = []
+        for (let i of raw) {
+          if (i["right_answer"] === "√") {
+            i["right_answer"] = "A"
+          } else if (i["right_answer"] === "X") {
+            i["right_answer"] = "B"
+          }
+          data.push(i)
+        }
+        return data
       }
     },
     beforeCreate() {
@@ -186,25 +213,30 @@
             type: "warning",
             duration: 3000,
           })
-          if (res.data.result.anwsered) {
-            this.$router.replace(`/score/${this.$route.params.id}/`)
-          } else {
-            this.$router.replace(`/home/`)
-          }
+          this.$router.replace(`/home/`)
         } else if (res.data.code === 802) {
           this.$tip({
             content: "您已超时",
             type: "warning",
             duration: 3000,
           })
-          this.$router.replace(`/score/${this.$route.params.id}/`)
+          this.$router.replace(`/record/${res.data.result.id}/`)
         } else if (res.data.code === 803) {
           this.$tip({
-            content: "您已经答过题了",
+            content: "查看答题详情",
+            type: "success",
+            duration: 1000,
+          })
+          this.questions = this.map(res.data.result.questions)
+          this.info = res.data.result.info
+          this.ready = true
+        } else if (res.data.code === 2004) {
+          this.$tip({
+            content: "答题次数已用完",
             type: "warning",
             duration: 3000,
           })
-          this.$router.replace(`/score/${this.$route.params.id}/`)
+          this.$router.replace(`/home`)
         } else if (res.data.code === 121) {
           this.questions = res.data.result.questions
           this.info = res.data.result.info
@@ -215,6 +247,11 @@
             this.time_limit -= now - start
           }
           this.ready = true
+          this.$tip({
+            content: `第${this.info.times}次答题，共${this.info.answer_times}次机会`,
+            type: "success",
+            duration: 3000,
+          })
         } else {
           this.$tip({
             content: res.data.msg,
@@ -234,7 +271,6 @@
       let _this = this;
       document.onkeydown = function (e) {
         let key = window.event.keyCode;
-        console.log(key);
         if (key === 65 || key === 37) {
           _this.cursor_decrease()
         }
@@ -431,6 +467,7 @@
 
 
     #progress {
+      padding: 10px 0;
       margin: 0 20px;
       color: #888;
     }
@@ -477,7 +514,7 @@
       height: 50vh;
       border-radius: 20px 20px 0 0;
       background-color: white;
-      padding: 0 2vw 5vh;
+      padding: 0 1vw 5vh;
       overflow: scroll;
     }
 
@@ -526,4 +563,25 @@
     background-color: #4ebaee;
     color: white;
   }
+
+  .correct_answered {
+    background-color: #00c48f;
+    color: white;
+  }
+
+  .error_answered {
+    background-color: #f44336;
+    color: white;
+  }
+
+  .correct {
+    border: 1px solid #00c48f;
+    color: #00c48f;
+  }
+
+  .error {
+    border: 1px solid #f44336;
+    color: #f44336;
+  }
+
 </style>
