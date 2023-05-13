@@ -1,12 +1,13 @@
 let cos_url = "https://cp-1304907527.cos.ap-nanjing.myqcloud.com/"
-let api_url = "https://api.seutools.com/"
-// let api_url = "http://127.0.0.1:8000/"
+// let api_url = "https://api.seutools.com/"
+let api_url = "https://api-competition.seutools.com/"
 
 
 let re_pattens = {
   card: /^[0-9]{9}$/,
   username: /^[a-zA-Z0-9\u4e00-\u9fa5]{1,16}$/,
-  password: /^[a-zA-Z0-9-*/+.~!@#$%^&()]{6,16}$/,
+  password: /^.*$/,
+  // password: /^[a-zA-Z0-9-*/+.~!@#$%^&()]{6,16}$/,
   phone: /^1[3-9][0-9]{9}$/,
   code: /^[0-9]{4}$/,
 }
@@ -21,8 +22,8 @@ let validators = {
     v => re_pattens.username.test(v) || "不能含有非法字符",
   ],
   password: [
-    v => 16 >= v.length && v.length >= 6 || '长度在 6 到 16 个字符',
-    v => re_pattens.password.test(v) || "不能含有非法字符",
+    // v => 16 >= v.length && v.length >= 6 || '长度在 6 到 16 个字符',
+    // v => re_pattens.password.test(v) || "不能含有非法字符",
   ],
   confirm_password: password => [
     v => 16 >= v.length && v.length >= 6 || '长度在 6 到 16 个字符',

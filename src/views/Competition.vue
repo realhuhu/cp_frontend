@@ -18,50 +18,104 @@
 
   <div v-if="ready" class="var-elevation--5" id="wrap">
     <div id="pc-title">
-      {{info.title}}
+      {{ info.title }}
     </div>
     <div v-if="info.time_limit" id="timer">
       <var-countdown :time="time_limit" format="HH 时 mm 分 ss 秒" @end="end"/>
       <var-divider margin="0"/>
     </div>
 
-    <div id="progress">{{cursor+1}}/{{info.total_num}}</div>
+    <div id="progress">{{ cursor + 1 }}/{{ info.total_num }}</div>
     <div id="content">
-      {{questions[cursor].content}}
+      <var-chip :type="['primary','success','warning'][questions[cursor].question_type]" size="small" :round="false">
+        {{ ["单选", "判断", "多选"][questions[cursor].question_type] }}
+      </var-chip>
+      {{ questions[cursor].content }}
     </div>
 
     <div id="options" @click="upload(false)">
-      <div
-        class="option"
-        :class="{active:questions[cursor].answer==='A'}" v-if="questions[cursor].choice_a"
-        @click="questions[cursor].answer='A'">
-        {{choice_num(questions[cursor])>2? "A.":""}}{{questions[cursor].choice_a}}
+      <div v-if="questions[cursor].question_type===0">
+        <div
+          class="option"
+          :class="{active:questions[cursor].answer==='A'}" v-if="questions[cursor].choice_a"
+          @click="questions[cursor].answer='A'">
+          A.{{ questions[cursor].choice_a }}
+        </div>
+
+
+        <div
+          class="option"
+          :class="{active:questions[cursor].answer==='B'}" v-if="questions[cursor].choice_b"
+          @click="questions[cursor].answer='B'">
+          B.{{ questions[cursor].choice_b }}
+        </div>
+
+
+        <div
+          class="option"
+          :class="{active:questions[cursor].answer==='C'}" v-if="questions[cursor].choice_c"
+          @click="questions[cursor].answer='C'">
+          C.{{ questions[cursor].choice_c }}
+        </div>
+
+
+        <div
+          class="option"
+          :class="{active:questions[cursor].answer==='D'}" v-if="questions[cursor].choice_d"
+          @click="questions[cursor].answer='D'">
+          D.{{ questions[cursor].choice_d }}
+        </div>
       </div>
 
+      <div v-if="questions[cursor].question_type===1">
+        <div
+          class="option"
+          :class="{active:questions[cursor].answer===questions[cursor].choice_a}"
+          @click="questions[cursor].answer=questions[cursor].choice_a">
+          {{ questions[cursor].choice_a }}
+        </div>
 
-      <div
-        class="option"
-        :class="{active:questions[cursor].answer==='B'}" v-if="questions[cursor].choice_b"
-        @click="questions[cursor].answer='B'">
-        {{choice_num(questions[cursor])>2? "B.":""}}{{questions[cursor].choice_b}}
+
+        <div
+          class="option"
+          :class="{active:questions[cursor].answer===questions[cursor].choice_b}"
+          @click="questions[cursor].answer=questions[cursor].choice_b">
+          {{ questions[cursor].choice_b }}
+        </div>
       </div>
 
+      <div v-if="questions[cursor].question_type===2">
+        <div
+          class="option"
+          :class="{active:questions[cursor].answer.includes('A')}" v-if="questions[cursor].choice_a"
+          @click="update(cursor,'A')">
+          A.{{ questions[cursor].choice_a }}
+        </div>
 
-      <div
-        class="option"
-        :class="{active:questions[cursor].answer==='C'}" v-if="questions[cursor].choice_c"
-        @click="questions[cursor].answer='C'">
-        C.{{questions[cursor].choice_c}}
+
+        <div
+          class="option"
+          :class="{active:questions[cursor].answer.includes('B')}" v-if="questions[cursor].choice_b"
+          @click="update(cursor,'B')">
+          B.{{ questions[cursor].choice_b }}
+        </div>
+
+
+        <div
+          class="option"
+          :class="{active:questions[cursor].answer.includes('C')}" v-if="questions[cursor].choice_c"
+          @click="update(cursor,'C')">
+          C.{{ questions[cursor].choice_c }}
+        </div>
+
+
+        <div
+          class="option"
+          :class="{active:questions[cursor].answer.includes('D')}" v-if="questions[cursor].choice_d"
+          @click="update(cursor,'D')">
+          D.{{ questions[cursor].choice_d }}
+        </div>
       </div>
-
-
-      <div
-        class="option"
-        :class="{active:questions[cursor].answer==='D'}" v-if="questions[cursor].choice_d"
-        @click="questions[cursor].answer='D'">
-        D.{{questions[cursor].choice_d}}
-      </div>
-
 
     </div>
 
@@ -96,7 +150,7 @@
       <div>答题卡</div>
     </div>
     <div v-for="(v,k) in questions" class="round" :class="{answered:v.answer}" @click="change_cursor(k)">
-      <span class="round-text">{{k+1}}</span>
+      <span class="round-text">{{ k + 1 }}</span>
     </div>
   </div>
 
@@ -105,7 +159,7 @@
     <var-divider/>
     <div style="min-height: 300px">
       <div v-for="(v,k) in questions" class="round" :class="{answered:v.answer}" @click="change_cursor(k)">
-        <span class="round-text">{{k+1}}</span>
+        <span class="round-text">{{ k + 1 }}</span>
       </div>
     </div>
     <div id="pc-submit">
@@ -115,473 +169,481 @@
 </template>
 
 <script>
-  export default {
-    name: "Competition",
-    data() {
-      return {
-        ready: false,
-        info: null,
-        questions: null,
-        cursor: 0,
-        show: false,
-        time_limit: null,
-        page: 0,
+export default {
+  name: "Competition",
+  data() {
+    return {
+      ready: false,
+      info: null,
+      questions: null,
+      cursor: 0,
+      show: false,
+      time_limit: null,
+      page: 0,
+    }
+  },
+  methods: {
+    update(cursor, option) {
+      let a = this.questions[cursor].answer.split("")
+      if (a.includes(option)) {
+        a.splice(a.indexOf(option), 1)
+      } else {
+        a.push(option)
       }
-    },
-    methods: {
-      choice_num(question) {
-        let num = 0
-        if (question.choice_a) num++
-        if (question.choice_b) num++
-        if (question.choice_c) num++
-        if (question.choice_d) num++
-        return num
-      },
-      cursor_decrease() {
-        if (this.cursor !== 0) this.cursor--
-      },
-      cursor_increase() {
-        if (this.cursor !== this.info.total_num - 1) this.cursor++
-      },
-      change_cursor(k) {
-        this.show = false
-        this.cursor = k
-      },
-      submit() {
-        if (this.questions.filter(x => !x.answer).length) {
-          this.$dialog({
-            message: "还有题目未做，确认提交？",
-          }).then(res => {
-            if (res === "confirm") {
-              this.upload(true)
-            }
-          })
-        } else {
-          this.upload(true)
+      a = a.join("")
+      let res = ""
+      for (let i of ["A", "B", "C", "D"]) {
+        if (a.includes(i)) {
+          res += i
         }
-      },
-      end() {
-        if (window.location.pathname.indexOf("competition") !== -1) this.upload(true)
-      },
-      upload(finish) {
-        this.$ajax.api.post(
-          `competition/${this.$route.params.id}/upload/`,
-          {
-            answer: this.questions,
-          }
-        ).then(res => {
-          if (res.data.code === 122) {
-          } else {
-            this.$tip({
-              content: res.data.msg,
-              type: "warning",
-              duration: 1000,
-            })
+      }
+      this.questions[cursor].answer = res
+    },
+    choice_num(question) {
+      let num = 0
+      if (question.choice_a) num++
+      if (question.choice_b) num++
+      if (question.choice_c) num++
+      if (question.choice_d) num++
+      return num
+    },
+    cursor_decrease() {
+      if (this.cursor !== 0) this.cursor--
+    },
+    cursor_increase() {
+      if (this.cursor !== this.info.total_num - 1) this.cursor++
+    },
+    change_cursor(k) {
+      this.show = false
+      this.cursor = k
+    },
+    submit() {
+      if (this.questions.filter(x => !x.answer).length) {
+        this.$dialog({
+          message: "还有题目未做，确认提交？",
+        }).then(res => {
+          if (res === "confirm") {
+            this.upload(true)
           }
         })
-        if (finish) {
-          this.$router.replace(`/score/${this.$route.params.id}/`)
-        }
-      },
-      map(raw) {
-        let data = []
-        for (let i of raw) {
-          if (i["right_answer"] === "√") {
-            i["right_answer"] = "A"
-          } else if (i["right_answer"] === "X") {
-            i["right_answer"] = "B"
-          }
-          data.push(i)
-        }
-        return data
+      } else {
+        this.upload(true)
       }
     },
-    beforeCreate() {
-      this.$ajax.api.get(
-        `competition/${this.$route.params.id}/questions/`,
+    end() {
+      if (window.location.pathname.indexOf("competition") !== -1) this.upload(true)
+    },
+    upload(finish) {
+      this.$ajax.api.post(
+        `competition/${this.$route.params.id}/upload/`,
+        {
+          answer: this.questions,
+        }
       ).then(res => {
-        if (res.data.code === 800) {
-          this.$tip({
-            content: "比赛还未开始",
-            type: "warning",
-            duration: 3000,
-          })
-          this.$router.replace(`/home/`)
-        } else if (res.data.code === 801) {
-          this.$tip({
-            content: "比赛已结束",
-            type: "warning",
-            duration: 3000,
-          })
-          this.$router.replace(`/home/`)
-        } else if (res.data.code === 802) {
-          this.$tip({
-            content: "您已超时",
-            type: "warning",
-            duration: 3000,
-          })
-          this.$router.replace(`/record/${res.data.result.id}/`)
-        } else if (res.data.code === 803) {
-          this.$tip({
-            content: "查看答题详情",
-            type: "success",
-            duration: 1000,
-          })
-          this.questions = this.map(res.data.result.questions)
-          this.info = res.data.result.info
-          this.ready = true
-        } else if (res.data.code === 2004) {
-          this.$tip({
-            content: "答题次数已用完",
-            type: "warning",
-            duration: 3000,
-          })
-          this.$router.replace(`/home`)
-        } else if (res.data.code === 121) {
-          this.questions = res.data.result.questions
-          this.info = res.data.result.info
-          this.time_limit = this.info.time_limit * 60 * 1000
-          if (this.info.start) {
-            let start = new Date(this.info.start)
-            let now = new Date()
-            this.time_limit -= now - start
-          }
-          this.ready = true
-          this.$tip({
-            content: `第${this.info.times}次答题，共${this.info.answer_times}次机会`,
-            type: "success",
-            duration: 3000,
-          })
+        if (res.data.code === 122) {
         } else {
           this.$tip({
             content: res.data.msg,
             type: "warning",
-            duration: 3000,
+            duration: 1000,
           })
         }
-      }).catch(err => {
+      })
+      if (finish) {
+        this.$router.replace(`/score/${this.$route.params.id}/`)
+      }
+    },
+  },
+  beforeCreate() {
+    this.$ajax.api.get(
+      `competition/${this.$route.params.id}/questions/`,
+    ).then(res => {
+      if (res.data.code === 800) {
         this.$tip({
-          content: err,
-          type: "error",
+          content: "比赛还未开始",
+          type: "warning",
           duration: 3000,
         })
+        this.$router.replace(`/home/`)
+      } else if (res.data.code === 801) {
+        this.$tip({
+          content: "比赛已结束",
+          type: "warning",
+          duration: 3000,
+        })
+        this.$router.replace(`/home/`)
+      } else if (res.data.code === 802) {
+        this.$tip({
+          content: "您已超时",
+          type: "warning",
+          duration: 3000,
+        })
+        this.$router.replace(`/record/${res.data.result.id}/`)
+      } else if (res.data.code === 803) {
+        this.$tip({
+          content: "查看答题详情",
+          type: "success",
+          duration: 1000,
+        })
+        this.info = res.data.result.info
+        this.ready = true
+      } else if (res.data.code === 2004) {
+        this.$tip({
+          content: "答题次数已用完",
+          type: "warning",
+          duration: 3000,
+        })
+        this.$router.replace(`/home`)
+      } else if (res.data.code === 121) {
+        this.questions = res.data.result.questions
+        for (let i in this.questions) {
+          if (this.questions[i].answer === undefined) {
+            this.questions[i].answer = ""
+          }
+        }
+        this.info = res.data.result.info
+        this.time_limit = this.info.time_limit * 60 * 1000
+        if (this.info.start) {
+          let start = new Date(this.info.start)
+          let now = new Date()
+          this.time_limit -= now - start
+        }
+        this.ready = true
+        this.$tip({
+          content: `第${this.info.times}次答题，共${this.info.answer_times}次机会`,
+          type: "success",
+          duration: 3000,
+        })
+      } else {
+        this.$tip({
+          content: res.data.msg,
+          type: "warning",
+          duration: 3000,
+        })
+      }
+    }).catch(err => {
+      this.$tip({
+        content: err,
+        type: "error",
+        duration: 3000,
       })
-    },
-    mounted() {
-      let _this = this;
-      document.onkeydown = function (e) {
-        let key = window.event.keyCode;
-        if (key === 65 || key === 37) {
-          _this.cursor_decrease()
-        }
-        if (key === 68 || key === 39) {
-          _this.cursor_increase()
-        }
-      };
-    }
+    })
+  },
+  mounted() {
+    let _this = this;
+    document.onkeydown = function (e) {
+      let key = window.event.keyCode;
+      if (key === 65 || key === 37) {
+        _this.cursor_decrease()
+      }
+      if (key === 68 || key === 39) {
+        _this.cursor_increase()
+      }
+    };
   }
+}
 </script>
 
 <style scoped>
-  @media screen and (min-width: 840px) {
+@media screen and (min-width: 840px) {
     #app-bar, #popup, #mask, #foot, #submit {
-      display: none;
+        display: none;
     }
 
     #background {
-      position: fixed;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-image: url(https://cp-1304907527.cos.ap-nanjing.myqcloud.com/static/background.jpg);
-      background-size: cover;
-      opacity: 0.4;
-      z-index: -1;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url(https://cp-1304907527.cos.ap-nanjing.myqcloud.com/static/background.jpg);
+        background-size: cover;
+        opacity: 0.4;
+        z-index: -1;
     }
 
     #wrap {
-      background-color: white;
-      position: relative;
-      left: 2%;
-      top: 2vh;
-      width: calc(95% - 400px);
-      border-radius: 20px;
+        background-color: white;
+        position: relative;
+        left: 2%;
+        top: 2vh;
+        width: calc(95% - 400px);
+        border-radius: 20px;
     }
 
     #pc-title {
-      margin-top: 20px;
-      line-height: 60px;
-      text-indent: 30px;
-      font-size: 30px;
-      font-weight: bolder;
+        margin-top: 20px;
+        line-height: 60px;
+        text-indent: 30px;
+        font-size: 30px;
+        font-weight: bolder;
     }
 
     #timer {
-      line-height: 40px;
-      font-size: 20px;
-      text-indent: 30px;
-      color: #888;
+        line-height: 40px;
+        font-size: 20px;
+        text-indent: 30px;
+        color: #888;
     }
 
     #progress {
-      margin: 30px;
-      font-size: 20px;
+        margin: 30px;
+        font-size: 20px;
     }
 
     #content {
-      margin: 30px;
-      min-height: 200px;
+        margin: 30px;
+        min-height: 200px;
     }
 
     .option {
-      margin: 10px 30px;
-      border-radius: 5px;
-      border: 1px solid #ddd;
-      line-height: 25px;
-      padding: 20px;
+        margin: 10px 30px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        line-height: 25px;
+        padding: 20px;
     }
 
     #crease {
-      margin: 30px;
+        margin: 30px;
     }
 
     #tip {
-      margin: 0 30px 30px;
-      color: #aaa;
+        margin: 0 30px 30px;
+        color: #aaa;
     }
 
     #pc-answer {
-      background-color: white;
-      position: fixed;
-      right: 2%;
-      top: 80px;
-      width: 400px;
-      border-radius: 20px;
+        background-color: white;
+        position: fixed;
+        right: 2%;
+        top: 80px;
+        width: 400px;
+        border-radius: 20px;
     }
 
     #answer-title {
-      line-height: 70px;
-      font-size: 30px;
-      text-align: center;
+        line-height: 70px;
+        font-size: 30px;
+        text-align: center;
     }
 
     .round {
-      margin: 2%;
-      width: 6%;
-      background-color: #f6f6f6;
-      border-radius: 50%;
-      display: inline-block;
-      text-align: center;
-      font-weight: bolder;
+        margin: 2%;
+        width: 6%;
+        background-color: #f6f6f6;
+        border-radius: 50%;
+        display: inline-block;
+        text-align: center;
+        font-weight: bolder;
     }
 
     .round::before {
-      content: '';
-      display: inline-block;
-      padding-top: 100%;
-      height: 100%;
-      vertical-align: middle;
+        content: '';
+        display: inline-block;
+        padding-top: 100%;
+        height: 100%;
+        vertical-align: middle;
     }
 
     .round-text {
-      display: inline-block;
-      vertical-align: middle;
+        display: inline-block;
+        vertical-align: middle;
     }
 
     #pc-submit {
-      margin: 30px;
+        margin: 30px;
     }
 
     #crease div, .option, .round {
-      cursor: pointer;
+        cursor: pointer;
     }
 
     #crease div:hover {
-      color: #4ebaee;
+        color: #4ebaee;
     }
 
     .option:hover {
-      background-color: #cfedff;
-      border: 1px solid #cfedff;
+        background-color: #cfedff;
+        border: 1px solid #cfedff;
     }
 
     .round:hover {
-      background-color: #cfedff;
+        background-color: #cfedff;
     }
-  }
+}
 
-  @media screen and (max-width: 840px) {
+@media screen and (max-width: 840px) {
     #pc-title, #pc-answer, #tip {
-      display: none;
+        display: none;
     }
 
     #background {
-      position: fixed;
-      left: 0;
-      top: 0;
-      background-color: #f6f6f6;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
+        position: fixed;
+        left: 0;
+        top: 0;
+        background-color: #f6f6f6;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
     }
 
     #app-bar {
-      height: 54px;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
+        height: 54px;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
     }
 
     #wrap {
-      width: 100vw;
-      background-color: white;
-      border-radius: 0 0 5px 5px;
-      margin: 54px 0 20vh;
+        width: 100vw;
+        background-color: white;
+        border-radius: 0 0 5px 5px;
+        margin: 54px 0 20vh;
     }
 
     #timer {
-      line-height: 50px;
-      font-size: 20px;
-      color: #888;
-      text-align: center;
+        line-height: 50px;
+        font-size: 20px;
+        color: #888;
+        text-align: center;
     }
 
     #content {
-      padding: 20px;
-      min-height: 100px;
+        padding: 20px;
+        min-height: 100px;
     }
 
     #options {
-      padding: 20px;
+        padding: 20px;
     }
 
     .option {
-      margin: 10px 0;
-      padding: 10px;
-      border-radius: 5px;
-      border: 1px solid #ddd;
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
     }
 
 
     #progress {
-      padding: 10px 0;
-      margin: 0 20px;
-      color: #888;
+        padding: 10px 0;
+        margin: 0 20px;
+        color: #888;
     }
 
 
     #crease div {
-      margin: 20px;
+        margin: 20px;
     }
 
     #submit {
-      padding: 20px;
+        padding: 20px;
     }
 
     #foot {
-      position: fixed;
-      left: 0;
-      bottom: 0;
-      width: 100%;
-      height: 46px;
-      background-color: white;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 46px;
+        background-color: white;
     }
 
     #foot-text {
-      line-height: 46px;
-      text-align: center;
-      font-size: 20px;
-      font-weight: bolder;
-      color: #41a0c9;
+        line-height: 46px;
+        text-align: center;
+        font-size: 20px;
+        font-weight: bolder;
+        color: #41a0c9;
     }
 
     #mask {
-      position: fixed;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(200, 200, 200, .8);
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(200, 200, 200, .8);
     }
 
     #popup {
-      position: fixed;
-      left: 0;
-      bottom: 0;
-      height: 50vh;
-      border-radius: 20px 20px 0 0;
-      background-color: white;
-      padding: 0 1vw 5vh;
-      overflow: scroll;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        height: 50vh;
+        border-radius: 20px 20px 0 0;
+        background-color: white;
+        padding: 0 1vw 5vh;
+        overflow: scroll;
     }
 
     #popup-title {
-      margin: 0 auto;
-      left: 0;
-      top: 50%;
-      line-height: 40px;
-      font-size: 20px;
-      text-align: center;
-      font-weight: bolder;
+        margin: 0 auto;
+        left: 0;
+        top: 50%;
+        line-height: 40px;
+        font-size: 20px;
+        text-align: center;
+        font-weight: bolder;
     }
 
     .round {
-      margin: 2vw;
-      width: 12vw;
-      height: 12vw;
-      background-color: #f6f6f6;
-      border-radius: 50%;
-      display: inline-block;
-      text-align: center;
-      font-weight: bolder;
+        margin: 2vw;
+        width: 12vw;
+        height: 12vw;
+        background-color: #f6f6f6;
+        border-radius: 50%;
+        display: inline-block;
+        text-align: center;
+        font-weight: bolder;
     }
 
     .round::before {
-      content: '';
-      display: inline-block;
-      height: 100%;
-      vertical-align: middle;
+        content: '';
+        display: inline-block;
+        height: 100%;
+        vertical-align: middle;
     }
 
     .round-text {
-      display: inline-block;
-      vertical-align: middle;
+        display: inline-block;
+        vertical-align: middle;
     }
 
 
-  }
+}
 
-  .active {
+.active {
     border: 1px solid #4ebaee;
     color: #4ebaee;
-  }
+}
 
-  .answered {
+.answered {
     background-color: #4ebaee;
     color: white;
-  }
+}
 
-  .correct_answered {
+.correct_answered {
     background-color: #00c48f;
     color: white;
-  }
+}
 
-  .error_answered {
+.error_answered {
     background-color: #f44336;
     color: white;
-  }
+}
 
-  .correct {
+.correct {
     border: 1px solid #00c48f;
     color: #00c48f;
-  }
+}
 
-  .error {
+.error {
     border: 1px solid #f44336;
     color: #f44336;
-  }
+}
 
 </style>

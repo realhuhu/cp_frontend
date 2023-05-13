@@ -23,8 +23,8 @@
     <var-card class="card" id="card">
       <template #extra>
         <div v-if="!is_use_phone">
+          <var-input placeholder="姓名" v-model="password" @keyup.enter="login"/>
           <username placeholder="一卡通号" v-model:username="username" @keyup.enter="login"/>
-          <password v-model:password="password" @keyup.enter="login"/>
         </div>
 
         <div v-else>
@@ -87,7 +87,7 @@
         url = "user/login/"
         data = {
           card: this.username,
-          password: this.password
+          username: this.password
         }
 
         this.$ajax.api.post(

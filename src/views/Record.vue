@@ -23,16 +23,18 @@
         <var-icon v-else color="red" name="close-circle-outline"/>
       </div>
       <div class="content">{{question.content}}</div>
+
       <div v-if="choice_num(question)===2">
         <div class="choice">{{question.choice_a}}</div>
         <div class="choice">{{question.choice_b}}</div>
         <div style="display: flex;line-height: 40px;justify-content: left">
-          <div class="answer">正确答案：{{answer_map[question.right_answer]}}</div>
+          <div class="answer">正确答案：{{question.right_answer}}</div>
           <div class="answer" :class="{wrong:question.right_answer!==question.answer}">
-            我的答案：{{answer_map[question.answer]||"未作答"}}
+            我的答案：{{question.answer||"未作答"}}
           </div>
         </div>
       </div>
+
       <div v-else>
         <div class="choice">A、{{question.choice_a}}</div>
         <div class="choice">B、{{question.choice_b}}</div>
@@ -64,10 +66,6 @@
         show: false,
         time_limit: null,
         page: 0,
-        answer_map: {
-          "A": "√",
-          "B": "X"
-        }
       }
     },
     methods: {
@@ -91,14 +89,6 @@
               duration: 1000,
             })
             this.questions = res.data.result.questions
-            for (let i of this.questions) {
-              if (i.right_answer === "√") {
-                i.right_answer = "A"
-              }
-              if (i.right_answer === "X") {
-                i.right_answer = "B"
-              }
-            }
             this.info = res.data.result.info
             this.ready = true
           } else if (res.data.code === 2000) {

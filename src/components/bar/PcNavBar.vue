@@ -8,7 +8,7 @@
 
     <div id="center">
       <div id="name" @click="to_home">
-        校史校情知识竞赛
+        东南大学学习贯彻习近平新时代中国特色社会主义思想主题教育知识竞赛
       </div>
     </div>
 
@@ -166,7 +166,7 @@
       float: left;
       margin: 0 5% 0 1%;
       font-weight: bold;
-      width: 40%;
+      width: 100%;
     }
 
 

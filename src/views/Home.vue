@@ -3,7 +3,7 @@
   <var-app-bar
     id="app-bar"
     class="var-elevation--1"
-    title="校史校情知识竞赛"
+    title="中国特色社会主义知识竞赛"
     title-position="center"
     color="#f6f6f6"
     style="font-weight: bolder;"
@@ -184,7 +184,7 @@
     </var-popup>
   </div>
 
-  <div class="bottom"><a href="https://beian.miit.gov.cn/">皖ICP备2021005102号-2</a></div>
+<!--  <div class="bottom"><a href="https://beian.miit.gov.cn/">皖ICP备2021005102号-2</a></div>-->
 </template>
 
 <script>
