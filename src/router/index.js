@@ -13,7 +13,7 @@ const routes = [
     path: "/home",
     component: Home,
     meta: {
-      title: '中国特色社会主义知识竞赛'
+      title: '第20届校史校情知识竞赛'
     }
   },
   {

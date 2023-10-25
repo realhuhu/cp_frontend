@@ -22,10 +22,10 @@
     </div>
     <div v-if="valid">
       <div id="score">
-        得分：{{data.score}}/{{data.total}}
+        正确率：{{ (100 * data.score / data.total).toFixed(0) }}%
       </div>
       <div id="time">
-        用时：{{data.time_used}}秒
+        用时：{{ data.time_used }}秒
       </div>
 
     </div>
@@ -48,105 +48,105 @@
 </template>
 
 <script>
-  export default {
-    name: "Score",
-    data() {
-      return {
-        data: {},
-        ready: false,
-        valid: true
-      }
-    },
-    beforeCreate() {
-      this.$ajax.api.get(
-        `competition/${this.$route.params.id}/score/`,
-      ).then(res => {
-        if (res.data.code === 123) {
-          this.data = res.data.result
-        } else if (res.data.code === 804) {
-          this.$tip({
-            content: "未参加比赛或未提交",
-            type: "warning",
-            duration: 3000,
-          })
-          this.$router.push("/home")
-        } else if (res.data.code === 805) {
-          this.valid = false
-        }
-        this.ready = true
-      })
+export default {
+  name: "Score",
+  data() {
+    return {
+      data: {},
+      ready: false,
+      valid: true
     }
+  },
+  beforeCreate() {
+    this.$ajax.api.get(
+      `competition/${this.$route.params.id}/score/`,
+    ).then(res => {
+      if (res.data.code === 123) {
+        this.data = res.data.result
+      } else if (res.data.code === 804) {
+        this.$tip({
+          content: "未参加比赛或未提交",
+          type: "warning",
+          duration: 3000,
+        })
+        this.$router.push("/home")
+      } else if (res.data.code === 805) {
+        this.valid = false
+      }
+      this.ready = true
+    })
   }
+}
 </script>
 
 <style scoped>
-  @media screen and (min-width: 840px) {
+@media screen and (min-width: 840px) {
     #app-bar {
-      display: none;
+        display: none;
     }
 
     #banner {
-      width: 100vw;
-      height: 8vw;
-      background-image: linear-gradient(to top, rgba(255, 255, 255, .8), rgba(255, 255, 255, 0)), url(https://cp-1304907527.cos.ap-nanjing.myqcloud.com/static/banner.jpg);
-      background-size: cover;
-      z-index: -1;
+        width: 100vw;
+        height: 8vw;
+        background-image: linear-gradient(to top, rgba(255, 255, 255, .8), rgba(255, 255, 255, 0)), url(https://cp-1304907527.cos.ap-nanjing.myqcloud.com/static/banner.jpg);
+        background-size: cover;
+        z-index: -1;
     }
 
     #wrap {
-      margin: 80px;
+        margin: 80px;
     }
 
     #icon {
-      text-align: center;
+        text-align: center;
     }
 
-    .btn,.btn2 {
-      width: 100px;
-      margin: 20px auto;
+    .btn, .btn2 {
+        width: 100px;
+        margin: 20px auto;
     }
 
     #calc {
-      line-height: 40px;
-      text-align: center;
-      margin: 80px 0;
-      font-size: 20px;
-      font-weight: bolder;
+        line-height: 40px;
+        text-align: center;
+        margin: 80px 0;
+        font-size: 20px;
+        font-weight: bolder;
     }
 
     #score, #time, #invalid {
-      line-height: 50px;
-      font-size: 30px;
-      text-align: center;
+        line-height: 50px;
+        font-size: 30px;
+        text-align: center;
     }
-  }
+}
 
-  @media screen and (max-width: 840px) {
+@media screen and (max-width: 840px) {
     #wrap {
-      margin: 80px;
+        margin: 80px;
     }
 
     #calc {
-      line-height: 40px;
-      text-align: center;
-      margin: 80px 0;
-      font-size: 20px;
-      font-weight: bolder;
+        line-height: 40px;
+        text-align: center;
+        margin: 80px 0;
+        font-size: 20px;
+        font-weight: bolder;
     }
 
     #icon {
-      text-align: center;
+        text-align: center;
     }
 
     #score, #time, #invalid {
-      line-height: 40px;
-      font-size: 20px;
-      text-align: center;
+        line-height: 40px;
+        font-size: 20px;
+        text-align: center;
     }
 
     .btn {
-      display: none;
+        display: none;
     }
-  }
+}
 
 </style>
